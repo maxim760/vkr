@@ -1,0 +1,111 @@
+import { FC, useState } from 'react'
+import { LogoIcon } from 'src/assets/icons/LogoIcon'
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
+import Divider from '@mui/material/Divider';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import MenuIcon from '@mui/icons-material/Menu';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import { alpha, Container, Link } from '@mui/material';
+import { useAuthStore } from 'src/store/profile/authStore';
+import { authApi } from 'src/api/services/auth/authService';
+import { useMutation } from '@tanstack/react-query';
+import { tokenService } from 'src/utils/config/tokens';
+import { Link as RouterLink } from 'react-router-dom';
+interface IProps {
+  
+}
+
+const drawerWidth = 240;
+const navItems = ['Home', 'About', 'Contact'];
+
+export const Header: FC<IProps> = ({ }) => {
+  const { mutateAsync, isLoading, data } = useMutation({ mutationFn: authApi.logout })
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const user = useAuthStore(state => state.user)
+  const clearUser = useAuthStore(state => state.clearUser)
+  const handleDrawerToggle = () => {
+    setMobileOpen((prev) => !prev);
+  };
+  const onClickLogout = async () => {
+    try {
+      await mutateAsync()
+    } catch(e) {
+      console.log("logout error", e)
+    } finally {
+      clearUser()
+      tokenService.removeAccessToken()
+    }
+  }
+  return (
+    <>
+      <AppBar elevation={2}>
+        <Container >
+        <Toolbar variant="dense" disableGutters>
+      <IconButton
+        color="inherit"
+              onClick={handleDrawerToggle}
+              size="small"
+        sx={{ mr: 2, borderRadius: 4, color: "primary.main", border: "1px solid", borderColor: "primary.main", display: { sm: 'none' } }}
+              
+      >
+        <MenuIcon />
+        </IconButton>
+            <Link component={RouterLink} sx={{display: "flex"}} to="/" >
+     <LogoIcon fontSize='large' sx={{width: "80px", height: "auto"}}/>
+            </Link>    
+
+      <Box component="nav" sx={{ display: { xs: 'none', sm: 'block' }, ml: "auto" }}>
+        {navItems.map((item) => (
+          <Button key={item} sx={{color: "black"}}>
+            {item}
+          </Button>
+        ))}
+            {user &&  <Button onClick={onClickLogout} sx={{color: "black"}}>
+            Выйти
+          </Button>}
+            </Box>
+          </Toolbar>
+          </Container>
+  </AppBar>
+  <Box component="nav">
+  <SwipeableDrawer
+    onOpen={handleDrawerToggle}
+    variant="temporary"
+    open={mobileOpen}
+    anchor="left"
+    onClose={handleDrawerToggle}
+    ModalProps={{
+      keepMounted: true, // Better open performance on mobile.
+    }}
+    sx={{
+      display: { xs: 'block', sm: 'none' },
+      '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+    }}
+  >
+    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+      <LogoIcon fontSize='large' sx={{width: "80px", height: "auto"}}/>
+      <Divider />
+      <List>
+        {navItems.map((item) => (
+          <ListItem key={item} disablePadding>
+            <ListItemButton sx={{ textAlign: 'center' }}>
+              <ListItemText primary={item} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  </SwipeableDrawer>
+</Box>
+    </>
+  )
+}

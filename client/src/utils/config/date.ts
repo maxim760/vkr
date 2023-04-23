@@ -1,0 +1,1 @@
+export const DateTimeFormatter = Intl.DateTimeFormat("ru", {day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric"})

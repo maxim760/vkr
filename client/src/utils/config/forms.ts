@@ -55,6 +55,11 @@ export const FormFields = {
       const parent = context.parent
       return value === parent?.password
     }),
+  Number: yup
+    .number()
+    .typeError("Введите число")
+    .nullable()
+    .transform((_, val) => (val !== "" ? Number(val) : null)),
   RequiredNumber: yup
     .number()
     .typeError("Введите число")

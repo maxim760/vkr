@@ -36,7 +36,6 @@ export const EditBalance: FC<IProps> = ({ onClose, open }) => {
   })
   const { handleSubmit } = methods
   const onSubmit = (data: EditUserBalanceDto) => {
-    console.log("onsubmit")
     mutateAsync(data)
   }
   return (

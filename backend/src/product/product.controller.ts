@@ -12,8 +12,8 @@ class ProductController {
     if (!req.user?.id) {
       return res.status(403).json({data: null, message: "Нет доступа"})
     }
-    const result = await productRepo.find()
-    return res.json(result)
+    const result = await productRepo.find({order: {name: "asc"}})
+    return res.json({products: result})
 
   }
   async editItem(req: TypedRequestBody<Product>, res: Response) {
@@ -25,7 +25,7 @@ class ProductController {
     itemFromDb.name = name;
     itemFromDb.count = count;
     const result = await productRepo.save(itemFromDb);
-    return res.json(result)
+    return res.json({data: true})
 
   }
   async create(req: TypedRequestBody<OmitCreateEntity<Product>>, res: Response) {
@@ -38,8 +38,7 @@ class ProductController {
     product.count = count
     product.goods = []
     const result = await productRepo.save(product)
-    return res.json(result)
-
+    return res.json({data: true})
   }
 }
 export default new ProductController

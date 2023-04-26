@@ -23,8 +23,6 @@ declare namespace NodeJS {
     DB_USERNAME: string
     DB_PASSWORD: string
     DB_NAME: string
-
-    DELIVERY_PRICE: string
   }
 }
 

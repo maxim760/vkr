@@ -195,9 +195,9 @@ class AuthController {
     const {query = ""} = req.query
     const users = await userRepo.find({
       where: [
-        {firstName: ILike(query)},
-        {lastName: ILike(query)},
-        {phone: ILike(query)},
+        {firstName: ILike(`%${query}%`)},
+        {lastName: ILike(`%${query}%`)},
+        {phone: ILike(`%${query}%`)},
       ]
     })
     if (!users) {

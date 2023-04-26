@@ -25,6 +25,8 @@ export class Goods {
   description: string;
   @Column({default: ""})
   img: string;
+  @Column({select: false})
+  left: number;
 
   @ManyToMany(() => Product, {onDelete: "CASCADE"})
   @JoinTable({

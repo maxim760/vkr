@@ -5,13 +5,15 @@ export const requireRole = (roleData: UserRole[] | UserRole) => {
   return (req: Request, res: Response, next: NextFunction) => {
     if (req.method === "OPTIONS") {
       next()
+      return
     }
     if (req.user?.roles) {
       const hasRole = req.user.roles.some((role: UserRole) => roles.includes(role))
       if (hasRole) {
         next()
+        return
       }
     }
-    res.status(403).send({ message: "Доступ запрещен" });
+    return res.status(403).json({ message: "Доступ запрещен" });
   }
 }

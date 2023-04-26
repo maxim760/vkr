@@ -20,3 +20,5 @@ export type LoginUserDto = {
 export type EditUserContactDto = Pick<IUser, "firstName" | "lastName" | "phone">
 
 export type EditUserBalanceDto = Pick<IUser, "cash">
+
+export type FindUsersDto = {query: string}

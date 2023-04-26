@@ -1,7 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { RoleTypes } from "src/api/types/models/User";
 import { RequireAuth } from "src/components/utils/router/RequireAuth";
-import { CertificateGiftPage, CertificatePage, HomePage, IngredientsPage, LoginPage, MenuPage, NotFoundPage, OrderPage, OrdersPage, SignupPage } from "src/pages";
+import { CertificateGiftPage, CertificatePage, HomePage, IngredientsPage, LoginPage, MenuPage, NotFoundPage, OrderPage, OrdersPage, SignupPage, CurierPage } from "src/pages";
+import { GoodsPage } from "src/pages/GoodsPage";
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,22 @@ export const router = createBrowserRouter([
     element: (
       <RequireAuth role={RoleTypes.Admin}>
         <IngredientsPage />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: "/goods",
+    element: (
+      <RequireAuth role={RoleTypes.Admin}>
+        <GoodsPage />
+      </RequireAuth>
+    ),
+  },
+  {
+    path: "/curiers",
+    element: (
+      <RequireAuth role={RoleTypes.Admin}>
+        <CurierPage />
       </RequireAuth>
     ),
   },
@@ -77,7 +94,7 @@ export const router = createBrowserRouter([
         )
       },
       {
-        path: ":id",
+        path: "users",
         element: (
           <RequireAuth>
             <CertificateGiftPage />

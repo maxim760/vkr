@@ -62,7 +62,7 @@ export const EditContact: FC<IProps> = ({ contact, onClose, open }) => {
             <Input label="Имя" name="firstName" />
           </Grid>
           <Grid item sm={6} xs={12}>
-            <Input label="Имя" name="lastName" />
+            <Input label="Фамилия" name="lastName" />
           </Grid>
           <Grid item xs={12}>
             <PhoneInput name="phone" />

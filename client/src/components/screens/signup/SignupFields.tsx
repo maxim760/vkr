@@ -158,7 +158,7 @@ export const SignupFields: FC<IProps> = ({ hideTitle, defaultValues, hidePasswor
       </Grid>
       <Grid item sm={6} xs={12}>
         <Input
-          label="Имя"
+          label="Фамилия"
           name="lastName"
         />
       </Grid>
@@ -188,7 +188,7 @@ export const SignupFields: FC<IProps> = ({ hideTitle, defaultValues, hidePasswor
       </Grid>}
       {!hidePassword && <Grid item sm={6} xs={12}>
         <Box sx={{displat: "flex", position: "relative"}}>
-          <TextField 
+          <Input 
             autoComplete="new-password" 
             label="Повторите пароль"
             name="repeatPassword"

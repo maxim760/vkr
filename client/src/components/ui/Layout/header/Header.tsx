@@ -54,7 +54,7 @@ export const Header: FC<IProps> = ({ }) => {
         color="inherit"
               onClick={handleDrawerToggle}
               size="small"
-        sx={{ mr: 2, borderRadius: 4, color: "primary.main", border: "1px solid", borderColor: "primary.main", display: { sm: 'none' } }}
+        sx={{ mr: 2, borderRadius: 4, color: "primary.main", borderBottom: "1px solid", borderColor: "primary.main", display: { sm: 'none' } }}
               
       >
         <MenuIcon />

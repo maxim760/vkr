@@ -4,7 +4,7 @@ import certificateController from "./certificate.controller";
 
 const certificateRouter = Router()
 
-certificateRouter.post("/add", passport.authenticate('jwt-refresh', { session: false }), certificateController.addCertificate)
-certificateRouter.get("/", passport.authenticate('jwt-refresh', { session: false }), certificateController.getCertificates)
+certificateRouter.post("/add", passport.authenticate('jwt', { session: false }), certificateController.addCertificate)
+certificateRouter.get("/", passport.authenticate('jwt', { session: false }), certificateController.getCertificates)
 
 export {certificateRouter}

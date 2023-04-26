@@ -12,25 +12,27 @@ import { Order } from "./order.entity";
 import { goodsRepo } from "../goods/goods.repo";
 import { time } from "console";
 
-const deliveryPrice = +process.env.DELIVERY_PRICE
-
 class OrderController {
-  async getAll(req: TypedRequestQuery<{ user: number, max: number, query: string }>, res: Response) {
+  async getAll(req: Request, res: Response) {
     const {id, roles} = req.user || {}
     if (!req.user?.id) {
       return res.status(403).json({data: null, message: "Нет доступа"})
     }
     const isAdmin = (roles || []).includes(UserRole.Admin)
-    const orders = await orderRepo.find(isAdmin ? {} : { where: { user: id } })
+    const orders = await orderRepo.find({
+      ...(isAdmin ? {} : { where: { user: id } }),
+      relations: { curier: true, user: true },
+      select: { user: {firstName: true, lastName: true, id: true, phone: true, email: true}}
+    })
     const totalCost = await orderRepo.sum("price", isAdmin ? undefined : { user: id })
     return res.json({
       orders,
       totalCost
     })
   }
-  async create(req: TypedRequestBody<OmitCreateEntity<Order, "goods"> & { goods: string[], userId: string }>, res: Response) {
+  async create(req: TypedRequestBody<OmitCreateEntity<Order, "goods"> & { goods: string[], userId: string, deliveryCost: number }>, res: Response) {
     const currentUser = await userRepo.findOneByOrFail({id: req.user?.id})
-    const {goods, price, userId, withDelivery} = req.body
+    const {goods, userId, withDelivery, deliveryCost} = req.body
     if (!goods.length) {
       return res.status(400).json({ message: 'Блюд не выбрано' });
     }
@@ -55,7 +57,7 @@ class OrderController {
     item.goods = goodsFromDb
     item.user = { id: userId } as User
     if(withDelivery) {
-      totalPrice += deliveryPrice;
+      totalPrice += deliveryCost;
       const curiers = await curierRepo.findBy({status: CurierStatus.Free});
       if(!curiers.length) {
         return res.status(400).json({ message: "Нет свободных курьеров" });
@@ -74,12 +76,16 @@ class OrderController {
     currentUser.cash -= totalPrice
     await userRepo.save(currentUser)
     const result = await orderRepo.save(item)
-    return res.json(result)
+    return res.json({data: true})
 
   }
 
   async confirmOrder(req: TypedRequestParams<{ id: string }>, res: Response) {
-    const {id} = req.params
+    const { id } = req.params
+    const isAdmin = (req.user?.roles || []).includes(UserRole.Admin)
+    if (!isAdmin && id === req.user?.id) {
+      return res.status(403).json("Нет доступа к этой функции")
+    }
     const itemFromDb = await orderRepo.findOneByOrFail({id})
     const curier = itemFromDb.curier;
     if(curier != null) {

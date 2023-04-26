@@ -17,13 +17,17 @@ class CurierController {
 
   }
   async editItem(req: TypedRequestBody<Curier>, res: Response) {
-    const {id, name, phone, status} = req.body
+    const { id, name, phone, status } = req.body
+    console.log("edit")
+    if (!status) {
+      return res.status(400).json({message: "Статус не указан"})
+    }
     const curierItemFromDb = await curierRepo.findOneByOrFail({id})
     curierItemFromDb.name = name;
     curierItemFromDb.phone = phone;
     curierItemFromDb.status = status
     const result = await curierRepo.save(curierItemFromDb);
-    return res.json(result)
+    return res.json({data: true})
 
   }
   async create(req: TypedRequestBody<OmitCreateEntity<Curier>>, res: Response) {
@@ -34,7 +38,7 @@ class CurierController {
     curier.status = CurierStatus.Free
     curier.orders = []
     const result = await curierRepo.save(curier)
-    return res.json(result)
+    return res.json({data: true})
 
   }
 
@@ -44,7 +48,7 @@ class CurierController {
     if (curier.status !== CurierStatus.Free) {
       return res.status(409).json({ message: 'Курьер несет заказ, его нельзя удалить' });
     }
-    await curierRepo.delete(curierId);
+    await curierRepo.delete({id: curierId});
     return res.status(200).json({data: true})
   }
 }

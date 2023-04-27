@@ -15,7 +15,11 @@ const getValidationSchema = () =>
 
 const invalidateQuery = QueryKeys.Goods
 
-export const useMenuSearch = () => {
+type IOptions = {
+  onlyActive?: boolean
+}
+
+export const useMenuSearch = ({onlyActive}: IOptions = {}) => {
   const methods = useForm<GetGoodsDto>({
     resolver: yupResolver(getValidationSchema()),
     defaultValues: {query: "", max: undefined, min: undefined},
@@ -30,6 +34,9 @@ export const useMenuSearch = () => {
   const queryData = useQuery({
     queryFn: () => goodsApi.get({max, min, query}),
     queryKey: [invalidateQuery],
+    select: onlyActive
+      ? (data) => data.filter(item => item.left > 0)
+      : undefined
   })
   return {
     queryData,

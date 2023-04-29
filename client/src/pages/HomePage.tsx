@@ -6,7 +6,7 @@ import {
   SpeedDialAction,
 } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { authApi } from 'src/api/services/auth/authService'
 import { Layout } from 'src/components/ui/Layout/layout/Layout'
 import { PropertiesCard } from 'src/components/ui/PropertiesCard/PropertiesCard'
@@ -27,6 +27,8 @@ import { ErrorMessage } from 'src/components/ui/statuses/ErrorMessage'
 import { hasOnlyData } from 'src/utils/config/config'
 import { BalanceChip } from 'src/components/ui/BalanceChip/BalanceChip'
 import { getPrintRole } from 'src/utils/functions/user'
+import { toast } from 'react-toastify'
+import { useAuthStore } from 'src/store/profile/authStore'
 interface IProps {}
 
 enum HomeDialogs {
@@ -36,10 +38,12 @@ enum HomeDialogs {
   Delete,
 }
 
-export const HomePage: React.FC<IProps> = ({}) => {
+export const HomePage: React.FC<IProps> = ({ }) => {
+  const setUser = useAuthStore(state => state.setUser)
   const { isLoading, data, error } = useQuery({
     queryFn: authApi.me,
     queryKey: ['me'],
+    onSuccess: (res) => setUser(res)
   })
   const { dialog, onClose, onOpen } = useDialog<HomeDialogs>()
   const userCardData = useMemo(() => {

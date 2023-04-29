@@ -8,6 +8,7 @@ import { SignupFields } from 'src/components/screens/signup/SignupFields'
 import { SocialButtons } from 'src/components/screens/signup/SocialButtons'
 import { Layout } from 'src/components/ui/Layout/layout/Layout'
 import { useAuthStore } from 'src/store/profile/authStore'
+import { RouterPaths } from 'src/utils/config/router'
 import { useSocialButtons } from 'src/utils/hooks/auth/useSocialButtons'
 
 interface IProps {
@@ -28,7 +29,7 @@ export const SignupPage: React.FC<IProps> = ({ }) => {
         <Paper sx={{mt: "20px", p: "12px 16px", textAlign: "center"}}>
           <Typography>
             Уже зарегистрированы?
-            <Link sx={{ml: "8px"}} component={RouterLink} to="/login">Войдите</Link>
+            <Link sx={{ml: "8px"}} component={RouterLink} to={RouterPaths.Login}>Войдите</Link>
           </Typography>
         </Paper>
       </Box>

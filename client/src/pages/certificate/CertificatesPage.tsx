@@ -11,6 +11,7 @@ import { ErrorMessage } from 'src/components/ui/statuses/ErrorMessage'
 import { Loader } from 'src/components/ui/statuses/Loader'
 import { hasOnlyData } from 'src/utils/config/config'
 import { CurrencyFormatter, DateTimeFormatter, DayFormatter } from 'src/utils/config/formatters'
+import { RouterPaths } from 'src/utils/config/router'
 
 interface IProps {
   
@@ -51,7 +52,7 @@ export const CertificatePage: React.FC<IProps> = ({ }) => {
               render="title"
             >
               <Box>
-                <Link to="/certificate/users" >
+                <Link to={RouterPaths.CertificateGift} >
                   <AppButton sx={{mt: 0, mx: 0}} fullWidth={false} size="small">Добавить</AppButton>
                 </Link>
               </Box>

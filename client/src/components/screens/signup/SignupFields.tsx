@@ -20,6 +20,7 @@ import { Input } from 'src/components/ui/form/Input'
 import { MultilineInput } from 'src/components/ui/form/MultilineInput'
 import { CloseButton } from 'src/components/ui/buttons/CloseButton'
 import { AppButton } from 'src/components/ui/buttons/AppButton'
+import { RouterPaths } from 'src/utils/config/router'
 export type IForm = {
   firstName: string,
   lastName: string,
@@ -81,7 +82,7 @@ export const SignupFields: FC<IProps> = ({ hideTitle, defaultValues, hidePasswor
       if (onClose) {
         onClose()
       }
-      navigate("/login")
+      navigate(RouterPaths.Login)
     }
   }, [data, dataOauth])
   useEffect(() => {
@@ -91,7 +92,7 @@ export const SignupFields: FC<IProps> = ({ hideTitle, defaultValues, hidePasswor
       }
       tokenService.setAccessToken(dataOauth.accessToken)
       setUser(dataOauth.user)
-      navigate("/")
+      navigate(RouterPaths.Profile)
     }
   }, [data, dataOauth])
   const methods = useForm<IForm>({

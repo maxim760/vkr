@@ -1,6 +1,6 @@
 import { IProduct } from "../product/response"
 
-export type IGoods = {
+export type IGoodsItem = {
   id: string,
   goodsType: string,
   description: string,
@@ -9,7 +9,8 @@ export type IGoods = {
   currentPrice: number,
   name: string,
   img: string,
-  products: IProduct[]
 }
+
+export type IGoods = IGoodsItem & {products: IProduct[]}
 
 export type IGoodsResponse = IGoods & {left: number}

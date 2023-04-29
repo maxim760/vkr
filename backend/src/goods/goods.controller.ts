@@ -40,35 +40,6 @@ class GoodsController {
         , "goods_left")
       // .getRawMany()
       .getMany()
-    const mapKeys: Record<string, string> = {
-      "current_price": "currentPrice",
-      "good_type": "goodsType",
-    }
-    console.log(data)
-    const getKey = (key: string) => mapKeys[key] || key
-    // const formatted = data.map(item => Object.keys(item).reduce((acc, key) => {
-    //   const value = item[key]
-    //   if (key.startsWith("goods_")) {
-    //     return {
-    //       ...acc,
-    //       [getKey(key.split("goods_")[1])]: value
-    //     }
-    //   }
-    //   if (key.startsWith("product_")) {
-    //     return {
-    //       ...acc,
-    //       products: {
-    //         ...acc?.product,
-    //         [getKey(key.split("products_")[1])]: value
-    //       }
-    //     }
-    //   }
-    //   return {
-    //     ...acc,
-    //     [getKey(key)]: value
-    //   }
-    // }, {} as Record<string, any>
-    // ))
     return res.json(data)
   }
   async editItem(req: TypedRequestBody<Goods>, res: Response) {

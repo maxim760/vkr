@@ -13,6 +13,7 @@ export const AppDataSource = new DataSource({
   entities: ["./src/**/*.entity.ts"],
   subscribers: [],
   migrations: [],
+
   extra: {
     ssl: {
       "rejectUnauthorized": false

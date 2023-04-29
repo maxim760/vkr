@@ -40,7 +40,7 @@ export const PropertiesCard: FC<IProps & PaperProps> = ({title, subTitle, groups
             objectFit: "cover",
             width: "100%",
             height: "auto",
-            aspectRatio: ImgRatios[img.type]
+            aspectRatio: `${ImgRatios[img.type]}`
           }
         }}>
           <img src={img.src} alt={img.alt} width="100%"  />
@@ -55,11 +55,10 @@ export const PropertiesCard: FC<IProps & PaperProps> = ({title, subTitle, groups
             {!!group.title && <Typography
               fontSize={16}
               fontWeight={700}
-              sx={{ p: small ? "8px 0 4px" : "16px 0 8px" }}
+              sx={{ pb: small ? 0.5 : 1, pt: !title && !groupI ? 0 : small ? 1 : 2}}
             >{group.title}</Typography>}
             {group.items.map(({ label, value }, i, arr) => {
               const bigMarginTop = !group.title && i === 0 && !title
-              console.log({bigMarginTop, label})
               return (
               <Box
                 key={label}

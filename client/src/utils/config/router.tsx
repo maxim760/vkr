@@ -1,12 +1,47 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { RoleTypes } from "src/api/types/models/User";
 import { RequireAuth } from "src/components/utils/router/RequireAuth";
-import { CertificateGiftPage, CertificatePage, HomePage, IngredientsPage, LoginPage, MenuPage, NotFoundPage, OrderPage, OrdersPage, SignupPage, CurierPage } from "src/pages";
+import { CertificateGiftPage, CertificatePage, HomePage, IngredientsPage, LoginPage, MenuPage, NotFoundPage, OrdersPage, SignupPage, CurierPage } from "src/pages";
 import { GoodsPage } from "src/pages/GoodsPage";
+//  todo мб блок аналитики
+export const RouterPaths = {
+  Profile: "/",
+  Login: "/login",
+  Signup: "/signup",
+  Menu: "/menu",
+  Goods: "/goods",
+  Curiers: "/curiers",
+  Ingredients: "/ingredients",
+  Order: "/order",
+  OrderHistory: "/order/history",
+  Certificates: "/certificate",
+  CertificateGift: "/certificate/users",
+}
+
+type IRouteLink = {
+  path: string,
+  title: string,
+}
+
+export const AdminLinks: IRouteLink[] = [
+  {path: RouterPaths.Profile, title: "Главная"},
+  {path: RouterPaths.Ingredients, title: "Ингредиенты"},
+  {path: RouterPaths.Goods, title: "Блюда"},
+  {path: RouterPaths.Curiers, title: "Курьеры"},
+  {path: RouterPaths.OrderHistory, title: "Все заказы"}
+]
+
+export const UserLinks: IRouteLink[] = [
+  {path: RouterPaths.Profile, title: "Главная"},
+  {path: RouterPaths.Menu, title: "Меню"},
+  {path: RouterPaths.OrderHistory, title: "История заказов"},
+  {path: RouterPaths.Certificates, title: "Сертификаты"}
+]
+
 
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: RouterPaths.Profile,
     element: (
       <RequireAuth>
         <HomePage />
@@ -14,15 +49,15 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/login",
+    path: RouterPaths.Login,
     element: <LoginPage />,
   },
   {
-    path: "/signup",
+    path: RouterPaths.Signup,
     element: <SignupPage />,
   },
   {
-    path: "/menu",
+    path: RouterPaths.Menu,
     element: (
       <RequireAuth>
         <MenuPage />
@@ -30,7 +65,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/ingredients",
+    path: RouterPaths.Ingredients,
     element: (
       <RequireAuth role={RoleTypes.Admin}>
         <IngredientsPage />
@@ -38,7 +73,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/goods",
+    path: RouterPaths.Goods,
     element: (
       <RequireAuth role={RoleTypes.Admin}>
         <GoodsPage />
@@ -46,7 +81,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/curiers",
+    path: RouterPaths.Curiers,
     element: (
       <RequireAuth role={RoleTypes.Admin}>
         <CurierPage />
@@ -54,10 +89,10 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/order",
+    path: RouterPaths.Order,
     children: [
       {
-        path: "history",
+        path: RouterPaths.OrderHistory.split(`${RouterPaths.Order}/`)[1],
         element: (
           <RequireAuth>
             <OrdersPage />
@@ -65,25 +100,17 @@ export const router = createBrowserRouter([
         )
       },
       {
-        path: ":id",
-        element: (
-          <RequireAuth>
-            <OrderPage />
-          </RequireAuth>
-        )
-      },
-      {
         path: "*",
-        element: <Navigate replace to="/order/history" />
+        element: <Navigate replace to={RouterPaths.OrderHistory} />
       },
       {
         index: true,
-        element: <Navigate replace to="/order/history" />
+        element: <Navigate replace to={RouterPaths.OrderHistory} />
       }
     ]
   },
   {
-    path: "/certificate",
+    path: RouterPaths.Certificates,
     children: [
       {
         index: true,
@@ -94,7 +121,7 @@ export const router = createBrowserRouter([
         )
       },
       {
-        path: "users",
+        path: RouterPaths.CertificateGift.split(`${RouterPaths.Certificates}/`)[1],
         element: (
           <RequireAuth>
             <CertificateGiftPage />

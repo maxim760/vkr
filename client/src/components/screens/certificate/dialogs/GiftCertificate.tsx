@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { authApi } from 'src/api/services/auth/authService'
 import { certificateApi } from 'src/api/services/certificate/certificateService'
 import { CreateCertDto } from 'src/api/services/certificate/dto'
@@ -13,6 +14,7 @@ import { AppDialog } from 'src/components/ui/dialogs/AppDialog'
 import { Input } from 'src/components/ui/form/Input'
 import { useAuthStore } from 'src/store/profile/authStore'
 import { FormFields, getSchema } from 'src/utils/config/forms'
+import { RouterPaths } from 'src/utils/config/router'
 import { DialogProps } from 'src/utils/types/types'
 
 type CreateCertCash = Pick<CreateCertDto, "price">
@@ -33,7 +35,7 @@ export const GiftCertificate: FC<IProps> = ({ onClose, open, toId }) => {
   const { mutateAsync, isLoading, data, error } = useMutation({
     mutationFn: certificateApi.add,
     onSuccess: () => {
-      navigate("/certificate")
+      navigate(RouterPaths.Certificates)
       onClose()
     },
   })
@@ -45,7 +47,7 @@ export const GiftCertificate: FC<IProps> = ({ onClose, open, toId }) => {
   const { handleSubmit } = methods
   const onSubmit = (data: CreateCertCash) => {
     if (!user?.id) {
-      // toast будет
+      toast.error("Нет id пользователя")
       return
     }
     mutateAsync({fromUser: user?.id, price: data.price, toUser: toId})

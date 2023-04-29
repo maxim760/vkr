@@ -1,8 +1,9 @@
-import { Column, CreateDateColumn, UpdateDateColumn, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToOne, JoinColumn, AfterRemove, ManyToOne } from "typeorm";
+import { Column, CreateDateColumn, UpdateDateColumn, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToOne, JoinColumn, AfterRemove, ManyToOne, OneToMany } from "typeorm";
 import { Address } from "../address/address.entity";
 import { Curier } from "../curier/curier.entity";
 import { Goods } from "../goods/goods.entity";
 import { User } from "../user/user.entity";
+import { OrderGoods } from "./order-goods.entity";
 
 @Entity({name: "orders"})
 export class Order {
@@ -13,14 +14,16 @@ export class Order {
   @ManyToOne(() => User, (user: User) => user.orders, {onDelete: "SET NULL", nullable: true})
   user: User
 
-  @ManyToMany(() => Goods, { onDelete: "CASCADE" })
+  @ManyToMany(() => Goods, goods => goods.orders)
   @JoinTable({
     name: "order_goods",
     joinColumn: { name: "order_id", referencedColumnName: "id" },
     inverseJoinColumn: { name: "goods_id", referencedColumnName: "id" },
-
   })
   goods: Goods[];
+
+  @OneToMany(() => OrderGoods, orderGoods => orderGoods.order)
+  orderToGoods: OrderGoods[];
 
   @Column({ name: "with_delivery", default: false })
   withDelivery: boolean

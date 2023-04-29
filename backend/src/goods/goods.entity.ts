@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, UpdateDateColumn, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToOne, JoinColumn, AfterRemove } from "typeorm";
+import { Column, CreateDateColumn, UpdateDateColumn, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToOne, JoinColumn, AfterRemove, OneToMany } from "typeorm";
 import { Address } from "../address/address.entity";
+import { OrderGoods } from "../order/order-goods.entity";
 import { Order } from "../order/order.entity";
 import { Product } from "../product/product.entity";
 import { Role } from "../role/role.entity";
@@ -26,7 +27,7 @@ export class Goods {
   @Column({default: ""})
   img: string;
   @Column({select: false})
-  left: number;
+  left: number = 0;
 
   @ManyToMany(() => Product, {onDelete: "CASCADE"})
   @JoinTable({
@@ -36,8 +37,11 @@ export class Goods {
   })
   products: Product[]
 
-  @ManyToMany(() => Order, { onDelete: "CASCADE" })
+  @ManyToMany(() => Order, order => order.goods)
   orders: Order[];
+
+  @OneToMany(() => OrderGoods, orderGoods => orderGoods.goods)
+  ordersToGoods: OrderGoods[];
 
   @CreateDateColumn()
   created_at: Date;

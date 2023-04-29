@@ -87,7 +87,10 @@ export const FormFields = {
     })).default([]).required(FormMessages.Required).test({
       message: 'Должно быть больше 0',
       test: arr => arr.length > 0,
-    })
+    }),
+  Boolean: yup
+    .bool()
+    .required(FormMessages.Required)
 }
 
 // export const getSchema = <T extends {}> (shape: Parameters<ObjectSchema<T>["shape"]>[0]) => yup.object<T>().shape(shape)

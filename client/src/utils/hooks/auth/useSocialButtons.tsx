@@ -4,6 +4,7 @@ import { IUserLoginResponse, IUserOauthMessage } from "src/api/services/auth/res
 import { IForm } from "src/components/screens/signup/SignupFields"
 import { useAuthStore } from "src/store/profile/authStore"
 import { getBaseUrl } from "src/utils/config/config"
+import { RouterPaths } from "src/utils/config/router"
 import { tokenService } from "src/utils/config/tokens"
 
 export const useSocialButtons = () => {
@@ -21,7 +22,7 @@ export const useSocialButtons = () => {
         const access = e.data.user.accessToken
         tokenService.setAccessToken(access)
         setUser(e.data.user.user)
-        navigate("/")
+        navigate(RouterPaths.Profile)
       }
     }
   }, [])

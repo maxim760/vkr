@@ -1,6 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup"
 import { useQuery } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
+import { toast } from "react-toastify"
 import { GetGoodsDto } from "src/api/services/goods/dto"
 import { goodsApi } from "src/api/services/goods/goodsService"
 import { FormFields, getSchema } from "src/utils/config/forms"
@@ -34,6 +35,7 @@ export const useMenuSearch = ({onlyActive}: IOptions = {}) => {
   const queryData = useQuery({
     queryFn: () => goodsApi.get({max, min, query}),
     queryKey: [invalidateQuery],
+    onError: () => toast.error("Ошибка при поиске"),
     select: onlyActive
       ? (data) => data.filter(item => item.left > 0)
       : undefined

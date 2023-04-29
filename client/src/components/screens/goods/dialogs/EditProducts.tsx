@@ -3,6 +3,7 @@ import { Box, Grid } from '@mui/material'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 import { CreateGoodsDto, EditGoodsProductsDto } from 'src/api/services/goods/dto'
 import { goodsApi } from 'src/api/services/goods/goodsService'
 import { IGoods } from 'src/api/services/goods/response'
@@ -35,6 +36,7 @@ export const EditProducts: FC<IProps> = ({ onClose, open, invalidateQuery, item,
   const { isLoading: ingrediendsLoading,data: ingrediends, error: errorIngredients } = useQuery({
     queryFn: productApi.get,
     queryKey: ["ingredients"],
+    onError: () => toast.error("Не загружены ингредиенты")
   })
   const queryClient = useQueryClient()
   const { mutateAsync, isLoading, data, error } = useMutation({

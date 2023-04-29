@@ -16,6 +16,7 @@ import { tokenService } from 'src/utils/config/tokens'
 import { AppButton } from 'src/components/ui/buttons/AppButton'
 import { FormComplete } from 'src/components/ui/form/FormComplete'
 import { Input } from 'src/components/ui/form/Input'
+import { RouterPaths } from 'src/utils/config/router'
 
 type ILoginForm = {
   email: string,
@@ -50,7 +51,7 @@ export const LoginFields: FC<IProps> = ({}) => {
     if (data) {
       tokenService.setAccessToken(data.accessToken)
       setUser(data.user)
-      navigate("/")
+      navigate(RouterPaths.Profile)
     }
   }, [data])
   const methods = useForm<ILoginForm>({

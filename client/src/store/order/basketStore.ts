@@ -1,18 +1,18 @@
-import { IGoods } from "src/api/services/goods/response";
+import { IGoods, IGoodsItem } from "src/api/services/goods/response";
 import { create } from "zustand";
 
-export type IBasketItem = {
+export type IGoodsWithCount = {
   count: number,
-  item: IGoods
+  item: IGoodsItem
 }
 
 export type IBasketStore = {
   basket: {
-    [id: string]: IBasketItem
+    [id: string]: IGoodsWithCount
   },
   plusItem(id: string): void,
   minusItem(id: string): void,
-  addItem(item: IGoods): void,
+  addItem(item: IGoodsItem): void,
   clear(): void,
   computed: {
     totalPrice: number

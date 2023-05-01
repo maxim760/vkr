@@ -18,11 +18,7 @@ declare namespace NodeJS {
     SESSION_SECRET: string
     PORT: string
     DB_TYPE: "mysql"
-    DB_HOST: string
-    DB_PORT: string
-    DB_USERNAME: string
-    DB_PASSWORD: string
-    DB_NAME: string
+    DB_CONNECT_URL: string
   }
 }
 

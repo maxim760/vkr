@@ -6,21 +6,9 @@ dotenv.config()
 // для хостинга просто вытащить все таблицы, которые уже созданы
 export const AppDataSource = new DataSource({
   type: process.env.DB_TYPE,
-  // port: +process.env.DB_PORT,
-  // host: process.env.DB_HOST,
-  // username: process.env.DB_USERNAME,
-  // password: process.env.DB_PASSWORD,
-  // database: process.env.DB_NAME,
-  url: "mysql://root:00000000@localhost:3306/pizza_rksp",
-  // url: "mysql://<username>:<password>@<host>:<port>/<db_name>"
-  // url: "mysql://pizza_user:8j8Y8y6XTNpxqm@85.10.205.173:3306/pizza_rksp6",
+  url: process.env.DB_CONNECT_URL,
   synchronize: false,
   logging: false,
   entities: ["./src/**/*.entity.ts"],
   subscribers: [],
-  // extra: {
-  //   ssl: {
-  //     "rejectUnauthorized": false
-  //   },
-  // }
 })

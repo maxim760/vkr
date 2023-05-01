@@ -16,35 +16,35 @@ AppDataSource
   .initialize()
   .then(async (connection) => {
     const queryRunner = connection.createQueryRunner();
-    await queryRunner.query(`
-      CREATE TRIGGER IF NOT EXISTS order_goods_AFTER_INSERT
-      AFTER INSERT
-      ON order_goods
-      FOR EACH ROW
-      BEGIN
-          UPDATE products
-              INNER JOIN product_goods
-          ON products.id = product_goods.product_id
-              INNER JOIN goods
-              ON goods.id = product_goods.goods_id
-          SET count = count - 1
-          WHERE goods.id = new.goods_id;
-      END;
-    `);
-    await queryRunner.query(`
-      CREATE TRIGGER IF NOT EXISTS users_AFTER_DELETE
-      AFTER DELETE
-      ON users FOR EACH ROW
-      BEGIN
-        delete from addresses where userId = old.id;
-          delete from users_roles_roles where users_roles_roles.usersId = old.id;
-          delete from orders where orders.userId = old.id;
-          delete order_goods from order_goods
-          left join orders
-          on order_goods.order_id = orders.id
-          where orders.userId = old.id;
-      END;
-    `);
+    // await queryRunner.query(`
+    //   CREATE TRIGGER IF NOT EXISTS order_goods_AFTER_INSERT
+    //   AFTER INSERT
+    //   ON order_goods
+    //   FOR EACH ROW
+    //   BEGIN
+    //       UPDATE products
+    //           INNER JOIN product_goods
+    //       ON products.id = product_goods.product_id
+    //           INNER JOIN goods
+    //           ON goods.id = product_goods.goods_id
+    //       SET count = count - 1
+    //       WHERE goods.id = new.goods_id;
+    //   END;
+    // `);
+    // await queryRunner.query(`
+    //   CREATE TRIGGER IF NOT EXISTS users_AFTER_DELETE
+    //   AFTER DELETE
+    //   ON users FOR EACH ROW
+    //   BEGIN
+    //     delete from addresses where userId = old.id;
+    //       delete from users_roles_roles where users_roles_roles.usersId = old.id;
+    //       delete from orders where orders.userId = old.id;
+    //       delete order_goods from order_goods
+    //       left join orders
+    //       on order_goods.order_id = orders.id
+    //       where orders.userId = old.id;
+    //   END;
+    // `);
     console.log("Data Source has been initialized!")
   })
   .catch((err) => {

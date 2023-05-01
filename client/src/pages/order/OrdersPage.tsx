@@ -31,6 +31,8 @@ import { CurrencyFormatter, DateTimeFormatter } from 'src/utils/config/formatter
 import { Box } from '@mui/system'
 import { ConfirmOrder } from 'src/components/screens/order/dialogs/ConfirmOrder'
 import { OrderDetails } from 'src/components/screens/order/dialogs/OrderDetails'
+import { useAuthStore } from 'src/store/profile/authStore'
+import { RoleTypes } from 'src/api/types/models/User'
 
 interface IProps {
   
@@ -49,6 +51,8 @@ type IDialog = {
 }
 const queryKey = QueryKeys.HistoryOrders
 export const OrdersPage: React.FC<IProps> = ({ }) => {
+  const user = useAuthStore(state => state.user)
+  const isAdmin = user?.roles?.some((item) => item.name === RoleTypes.Admin)
   const {dialog, onClose, onOpen} = useDialog<IDialog>()
   const { isLoading, data, error } = useQuery({
     queryFn: orderApi.get,
@@ -62,7 +66,7 @@ export const OrdersPage: React.FC<IProps> = ({ }) => {
           goods: item.goods.reduce((acc, goodsItem) => {
             const index = acc.findIndex(item => item.item.id === goodsItem.id)
             if (index !== -1) {
-              return [...acc.slice(0, index), {item: acc[index].item, count: acc[index].count + 1}, acc.slice(index + 1)] as IGoodsWithCount[]
+              return [...acc.slice(0, index), {item: acc[index].item, count: acc[index].count + 1}, ...acc.slice(index + 1)] as IGoodsWithCount[]
             }
             return [...acc, {item: goodsItem, count: 1}]
           }, [] as IGoodsWithCount[])
@@ -70,6 +74,8 @@ export const OrdersPage: React.FC<IProps> = ({ }) => {
       }
     }
   })
+  console.log(data)
+  console.log(dialog)
   return (
     <Layout title="История заказов">
       {isLoading && <Loader />}
@@ -77,10 +83,11 @@ export const OrdersPage: React.FC<IProps> = ({ }) => {
       {!!hasOnlyData(data, { isLoading, error }) && (
         <>
           <Alert sx={{mx: "auto", py: 0, px: 1, mt: 1}} variant='outlined' severity='info'>Всего потрачено: {CurrencyFormatter.format(data.totalCost)}</Alert>
-          <Grid container spacing={2} sx={{mb: 2, mt: 0.5}}>
+          <Grid container spacing={2} sx={{mb: 2, mt: 0.5, alignItems: "stretch"}}>
             {data.orders.map((item) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}> 
                 <PropertiesCard
+                  sx={{height: "100%", justifyContent: "start"}}
                   groups={[
                     {
                       id: "1",
@@ -98,10 +105,22 @@ export const OrdersPage: React.FC<IProps> = ({ }) => {
                         { label: "Имя", value: item.curier.name},
                         { label: "Телефон", value: item.curier.phone},
                       ]
+                    }] : []),
+                    ...(isAdmin ? [{
+                      id: "3",
+                      title: "Автор заказа",
+                      items: item.user ? [
+                        { label: "Имя", value: item.user.firstName},
+                        { label: "Фамилия", value: item.user.lastName},
+                        { label: "Почта", value: item.user.email},
+                        { label: "Телефон", value: item.user.phone},
+                      ] : [
+                        {label: "Аккаунт", value: "DELETED"}
+                      ]
                     }] : [])
                   ]}
                 >
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mt: "auto" }}>
                     {!item.done && <AppButton onClick={onOpen({type: Dialogs.Confirm, goods: item.goods, id: item.id, price: item.price})} noMargin>Подтвердить</AppButton>}
                     <AppButton onClick={onOpen({type: Dialogs.Details, goods: item.goods, id: item.id, price: item.price})} noMargin>Подробнее</AppButton>
                     

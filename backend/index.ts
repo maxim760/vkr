@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import express, { Router, Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import passport from "passport";
 import dotenv from "dotenv"
 import session from 'express-session';
@@ -12,7 +12,6 @@ import { certificateRouter } from './src/certificate/certificate.router';
 import { goodsRouter } from './src/goods/goods.router';
 import { curierRouter } from './src/curier/curier.router';
 import { productRouter } from './src/product/product.router';
-
 AppDataSource
   .initialize()
   .then(async (connection) => {
@@ -67,6 +66,16 @@ app.use(passport.session());
 app.use(express.json())
 app.use(cookieParser())
 
+const ErrorHandler = (err: unknown, req: Request, res: Response, next: NextFunction) => {
+  console.log("Middleware Error Hadnling");
+  const {message = "Неизвестная ошибка", statusCode = 500} = err as Record<string, any> || {}
+  res.status(statusCode).json({
+    success: false,
+    status: statusCode,
+    message: message
+  })
+}
+
 
 const rootRouter = Router()
 
@@ -77,6 +86,9 @@ rootRouter.use("/goods", goodsRouter)
 rootRouter.use("/curier", curierRouter)
 rootRouter.use("/product", productRouter)
 app.use("/api", rootRouter)
+
+app.use(ErrorHandler)
+
 app.listen(process.env.PORT, () => {
     console.log('Сервер запущен на порту ' + process.env.PORT);
 });

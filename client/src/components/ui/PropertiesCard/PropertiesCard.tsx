@@ -49,7 +49,7 @@ export const PropertiesCard: FC<IProps & PaperProps> = ({title, subTitle, groups
       <Box sx={{mt: message ? "auto" : 0}}>
       {message}
       </Box>
-      <Box sx={{mt: !message ? "auto" : 0}}>
+      <Box sx={{mt: !message && title ? "auto" : 0}}>
         {groups.map((group, groupI, groupArr) => (
           <React.Fragment key={group.id}>
             {!!group.title && <Typography
@@ -58,7 +58,7 @@ export const PropertiesCard: FC<IProps & PaperProps> = ({title, subTitle, groups
               sx={{ pb: small ? 0.5 : 1, pt: !title && !groupI ? 0 : small ? 1 : 2}}
             >{group.title}</Typography>}
             {group.items.map(({ label, value }, i, arr) => {
-              const bigMarginTop = !group.title && i === 0 && !title
+              const bigMarginTop = !group.title && i === 0 && (divider || !divider && !title)
               return (
               <Box
                 key={label}
@@ -107,7 +107,7 @@ export const PropertiesCard: FC<IProps & PaperProps> = ({title, subTitle, groups
         <Typography sx={{mt: "12px", textAlign: "center"}} fontSize={18}>Список пуст</Typography>
       )}
       {!!children && render === "bottom" && (
-        <Box sx={{mt: small ? 1 : 2, display: "flex", flexDirection: "column"}}>
+        <Box sx={{pt: small ? 1 : 2, mt: "auto", display: "flex", flexDirection: "column"}}>
           {children}
         </Box>
       )}

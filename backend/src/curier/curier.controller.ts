@@ -8,48 +8,62 @@ import { Curier } from "./curier.entity";
 import { curierRepo } from "./curier.repo";
 
 class CurierController {
-  async getAll(req: Request, res: Response) {
-    if (!req.user?.id) {
-      return res.status(403).json({data: null, message: "Нет доступа"})
+  async getAll(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user?.id) {
+        return res.status(403).json({data: null, message: "Нет доступа"})
+      }
+      const result = await curierRepo.find()
+      return res.json(result)
+    } catch (error) {
+      next(error)
     }
-    const result = await curierRepo.find()
-    return res.json(result)
 
   }
-  async editItem(req: TypedRequestBody<Curier>, res: Response) {
-    const { id, name, phone, status } = req.body
-    console.log("edit")
-    if (!status) {
-      return res.status(400).json({message: "Статус не указан"})
+  async editItem(req: TypedRequestBody<Curier>, res: Response, next: NextFunction) {
+    try {
+      const { id, name, phone, status } = req.body
+      if (!status) {
+        return res.status(400).json({message: "Статус не указан"})
+      }
+      const curierItemFromDb = await curierRepo.findOneByOrFail({id})
+      curierItemFromDb.name = name;
+      curierItemFromDb.phone = phone;
+      curierItemFromDb.status = status
+      const result = await curierRepo.save(curierItemFromDb);
+      return res.json({data: true})
+    } catch (error) {
+      next(error)
     }
-    const curierItemFromDb = await curierRepo.findOneByOrFail({id})
-    curierItemFromDb.name = name;
-    curierItemFromDb.phone = phone;
-    curierItemFromDb.status = status
-    const result = await curierRepo.save(curierItemFromDb);
-    return res.json({data: true})
 
   }
-  async create(req: TypedRequestBody<OmitCreateEntity<Curier>>, res: Response) {
-    const {name, phone} = req.body
-    const curier = new Curier()
-    curier.name = name
-    curier.phone = phone
-    curier.status = CurierStatus.Free
-    curier.orders = []
-    const result = await curierRepo.save(curier)
-    return res.json({data: true})
-
+  async create(req: TypedRequestBody<OmitCreateEntity<Curier>>, res: Response, next: NextFunction) {
+    try {
+      const {name, phone} = req.body
+      const curier = new Curier()
+      curier.name = name
+      curier.phone = phone
+      curier.status = CurierStatus.Free
+      curier.orders = []
+      const result = await curierRepo.save(curier)
+      return res.json({data: true})
+    } catch (error) {
+      next(error)
+    }
   }
 
-  async delete(req: TypedRequestParams<{curierId: string}>, res: Response) {
-    const { curierId } = req.params;
-    const curier = await curierRepo.findOneByOrFail({ id: curierId });
-    if (curier.status !== CurierStatus.Free) {
-      return res.status(409).json({ message: 'Курьер несет заказ, его нельзя удалить' });
+  async delete(req: TypedRequestParams<{curierId: string}>, res: Response, next: NextFunction) {
+    try {
+      const { curierId } = req.params;
+      const curier = await curierRepo.findOneByOrFail({ id: curierId });
+      if (curier.status !== CurierStatus.Free) {
+        return res.status(409).json({ message: 'Курьер несет заказ, его нельзя удалить' });
+      }
+      await curierRepo.delete({id: curierId});
+      return res.status(200).json({data: true})
+    } catch (error) {
+      next(error)
     }
-    await curierRepo.delete({id: curierId});
-    return res.status(200).json({data: true})
   }
 }
 export default new CurierController

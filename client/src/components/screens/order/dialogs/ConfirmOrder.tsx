@@ -21,13 +21,14 @@ export const ConfirmOrder: FC<IProps> = ({ onClose, open, id, invalidateQuery })
     },
   })
   const onSubmit = () => {
+    console.log("mutate async id", id)
     mutateAsync({id})
   }
   return (
     <ConfirmDialog
       onClose={onClose}
       open={open}
-      title="Удаление курьера"
+      title="Подтвердить получение"
       isLoading={isLoading}
       onSubmit={onSubmit}
     />

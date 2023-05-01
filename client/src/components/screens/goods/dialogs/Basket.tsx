@@ -79,7 +79,7 @@ export const Basket: FC<IProps> = ({ onClose, open }) => {
           {Object.values(basket).map((basketItem, i, arr) => {
             const { item, count } = basketItem
             return (
-              <Grid item key={item.id}>
+              <Grid item key={item.id} xs={12}>
                 <OrderItem
                   divider={arr.length - 1 === i}
                   item={item}

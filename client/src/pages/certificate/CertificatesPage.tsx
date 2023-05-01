@@ -23,13 +23,14 @@ const toPropertiesCard = (item: ICertificate, field: CertUserKeys, label: string
     items: [
       {value: CurrencyFormatter.format(item.price), label: "Стоимость" },
       {value: DateTimeFormatter.format(item.created_at), label: "Дата" },
-      {value: item[field].firstName + " " + item[field].lastName, label },
+      {value: !item[field] ? "DELETED удаленный аккаунт" : item[field].firstName + " " + item[field].lastName, label },
     ]
   }
 }
 
 export const CertificatePage: React.FC<IProps> = ({ }) => {
   const { isLoading, data, error } = useQuery({ queryFn: certificateApi.get, queryKey: ["certificates"] })
+  console.log({data})
   return (
     <Layout title="Сертификаты">
       {isLoading && <Loader />}
@@ -40,14 +41,14 @@ export const CertificatePage: React.FC<IProps> = ({ }) => {
           <Grid item xs={12} sm={6}>
             <PropertiesCard
               title='Полученные'
-              groups={data.donated.map(item => toPropertiesCard(item, "fromUser", "От кого"))}
+              groups={data.received.map(item => toPropertiesCard(item, "fromUser", "От кого"))}
               divider
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <PropertiesCard
               title='Подаренные'
-              groups={data.received.map(item => toPropertiesCard(item, "fromUser", "Кому"))}
+              groups={data.donated.map(item => toPropertiesCard(item, "toUser", "Кому"))}
               divider
               render="title"
             >

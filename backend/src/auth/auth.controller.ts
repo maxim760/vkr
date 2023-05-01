@@ -61,7 +61,6 @@ class AuthController {
       return res.status(500).json({ message: 'Не удалось создать пользователя.' })
     }
   }
-  // todo - повыносить в сервисы логику
   async registrationOauth2(req: TypedRequestBody<CreateUserDto>, res: Response) {
     try {
       const { user: { password, ...userData }, address: addressBody } = req.body;
@@ -112,108 +111,147 @@ class AuthController {
   }
 
   async login(req: TypedRequestBody<LoginUserDto>, res: Response, next: NextFunction) {
-    passport.authenticate('local', async (err, user: User, info) => {
-      if (err || !user) {
-        return res.status(401).json({ message: 'Неправильные email или пароль.', login: true });
+    try {
+      passport.authenticate('local', async (err, user: User, info) => {
+        if (err || !user) {
+          return res.status(401).json({ message: 'Неправильные email или пароль.', login: true });
+        }
+        const payload: IUserPayload = { id: user.id, email: user.email, roles: user.roles.map(item => item.name) };
+        const newTokens = TokenService.generateTokens(payload)
+        user.refreshToken = newTokens.refreshToken
+        await userRepo.save(user)
+        res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+        return res.json({ user: user.toJSON(), accessToken: newTokens.accessToken });
+      })(req, res, next);
+    } catch (e) {
+      return res.status(500).json({message: "Ошибка авторизации"})
+    }
+
+  }
+
+  async logout(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await userRepo.findOneBy({ id: req.user?.id || "" })
+      if (user) {
+        user.refreshToken = ""
+        await userRepo.save(user)
       }
-      const payload: IUserPayload = { id: user.id, email: user.email, roles: user.roles.map(item => item.name) };
-      const newTokens = TokenService.generateTokens(payload)
-      user.refreshToken = newTokens.refreshToken
-      await userRepo.save(user)
-      res.cookie('refreshToken', newTokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
-      return res.json({ user: user.toJSON(), accessToken: newTokens.accessToken });
-    })(req, res, next);
+      res.json({success: true})
+    } catch (e) {
+      next(e)
+    }
+  }
+  async refresh(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = req.user as { tokens: ITokens, user: User }
+      res.json({user: data?.user?.toJSON?.(), accessToken: data.tokens.accessToken})
+    } catch (e) {
+      next(e)
+    }
   }
 
-  async logout(req: Request, res: Response) {
-    res.clearCookie('refreshToken')
-    const user = await userRepo.findOneBy({ id: req.user?.id || "" })
-    if (user) {
-      user.refreshToken = ""
-      await userRepo.save(user)
+  async oauthCallback(req: Request, res: Response, next: NextFunction) {
+    try {
+      console.log("oauth starts")
+      if ((req.user as any)?.tokens) {
+        res.cookie('refreshToken', (req.user as any).tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      }
+      
+      res.send(`
+        <script>
+          window.opener.postMessage(${JSON.stringify({ user: {...req.user, accessToken: req.user?.tokens?.accessToken || "" }, type: "oauth2" })}, '*');
+          window.close();
+        </script>
+      `);
+    } catch (e) {
+      next(e)
     }
-    res.json({success: true})
   }
-  // проверить, работает ли везде toJSON
-  async refresh(req: Request, res: Response) {
-    const data = req.user as { tokens: ITokens, user: User }
-    res.json({user: data?.user?.toJSON?.(), accessToken: data.tokens.accessToken})
+  async me(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({data: null})
+      }
+      const user = await userRepo.findOne({ where: { email: req.user.email }, relations: { address: true, roles: true } })
+      if (!user) {
+        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
+      }
+      res.json(user.toJSON())
+    } catch (error) {
+      next(error)
+    }
   }
-
-  async oauthCallback(req: Request, res: Response) {
-    console.log("oauth starts")
-    if ((req.user as any)?.tokens) {
-      res.cookie('refreshToken', (req.user as any).tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+  async updateUserCash(req: TypedRequestBody<UpdateUserCashDto>, res: Response, next: NextFunction) {
+    try {
+      const id = req.user?.id
+      const user = await userRepo.findOneBy({ id })
+      if (!user) {
+        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
+      }
+      await userRepo.update({ id }, { cash: () => `cash + ${req.body.cash}` })
+      return res.json({data: true})
+    } catch (error) {
+      next(error)
     }
-    
-    res.send(`
-      <script>
-        window.opener.postMessage(${JSON.stringify({ user: {...req.user, accessToken: req.user?.tokens?.accessToken || "" }, type: "oauth2" })}, '*');
-        window.close();
-      </script>
-    `);
   }
-  async me(req: Request, res: Response) {
-    if (!req.user) {
-      return res.status(401).json({data: null})
+  async updateUserContact(req: TypedRequestBody<UpdateUserContantDto>, res: Response, next: NextFunction) {
+    try {
+      const id = req.user?.id
+      const user = await userRepo.findOneBy({ id })
+      if (!user) {
+        res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
+      }
+      await userRepo.update({ id }, req.body)
+      return res.json({data: true})
+    } catch (error) {
+      next(error)
     }
-    const user = await userRepo.findOne({ where: { email: req.user.email }, relations: { address: true, roles: true } })
-    if (!user) {
-      return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
-    }
-    res.json(user.toJSON())
   }
-  async updateUserCash(req: TypedRequestBody<UpdateUserCashDto>, res: Response) {
-    const id = req.user?.id
-    const user = await userRepo.findOneBy({ id })
-    if (!user) {
-      return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
+  async updateUserAddress(req: TypedRequestBody<UpdateUserAddressDto>, res: Response, next: NextFunction) {
+    try {
+      const id = req.user?.id
+      const user = await userRepo.findOne({ where: { id }, relations: {address: true}})
+      if (!user) {
+        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
+      }
+      const result = await addressRepo.update({ id: user.address.id }, {...user?.address, ...req.body})
+      return res.json({data: true})
+    } catch (error) {
+      next(error)
     }
-    await userRepo.update({ id }, { cash: () => `cash + ${req.body.cash}` })
-    return res.json({data: true})
-  }
-  async updateUserContact(req: TypedRequestBody<UpdateUserContantDto>, res: Response) {
-    const id = req.user?.id
-    const user = await userRepo.findOneBy({ id })
-    if (!user) {
-      res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
-    }
-    await userRepo.update({ id }, req.body)
-    return res.json({data: true})
-  }
-  async updateUserAddress(req: TypedRequestBody<UpdateUserAddressDto>, res: Response) {
-    const id = req.user?.id
-    const user = await userRepo.findOne({ where: { id }, relations: {address: true}})
-    if (!user) {
-      return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
-    }
-    const result = await addressRepo.update({ id: user.address.id }, {...user?.address, ...req.body})
-    return res.json({data: true})
-  }
-
-  async getAllUsers(req: TypedRequestQuery<FindUsersDto>, res: Response) {
-    const {query = ""} = req.query
-    const users = await userRepo.find({
-      where: [
-        {firstName: ILike(`%${query}%`)},
-        {lastName: ILike(`%${query}%`)},
-        {phone: ILike(`%${query}%`)},
-      ]
-    })
-    if (!users) {
-      return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
-    }
-    return res.json(users.map(user => user.toJSON()))
   }
 
-  async deleteUser(req: Request, res: Response) {
-    const id = req.user?.id
-    const user = await userRepo.findOne({ where: { id }})
-    if (!user) {
-      return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
+  async getAllUsers(req: TypedRequestQuery<FindUsersDto>, res: Response, next: NextFunction) {
+    try {
+      const {query = ""} = req.query
+      const users = await userRepo.find({
+        where: [
+          {firstName: ILike(`%${query}%`)},
+          {lastName: ILike(`%${query}%`)},
+          {phone: ILike(`%${query}%`)},
+        ]
+      })
+      if (!users) {
+        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
+      }
+      return res.json(users.map(user => user.toJSON()))
+    } catch (error) {
+      next(error)
     }
-    userRepo.delete([id])
-    res.json({data: 1})
+  }
+
+  async deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const id = req.user?.id
+      const user = await userRepo.findOne({ where: { id }})
+      if (!user) {
+        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
+      }
+      userRepo.delete([id])
+      res.json({data: 1})
+    } catch (error) {
+      next(error)
+    }
   }
 
 }

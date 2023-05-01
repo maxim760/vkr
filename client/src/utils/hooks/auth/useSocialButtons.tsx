@@ -33,7 +33,11 @@ export const useSocialButtons = () => {
     }
   }, [onMessage])
   const onClickSocial = (path: string) => () => {
-    const popupWindow = window.open(`${getBaseUrl()}/auth/${path}`, path, 'height=600,width=450,menubar=no,toolbar=no,resizable=yes,scrollbars=yes')
+    try {
+      const popupWindow = window.open(`${getBaseUrl()}/auth/${path}`, path, 'height=600,width=450,menubar=no,toolbar=no,resizable=yes,scrollbars=yes')
+    } catch (e) {
+      console.log("error")
+    }
   }
   return {
     onClickSocial,

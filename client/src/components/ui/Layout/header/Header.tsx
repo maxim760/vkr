@@ -129,6 +129,9 @@ export const Header: FC<IProps> = ({}) => {
                   </NavbarLink>
                 </ListItem>
               ))}
+              <ListItem onClick={onClickLogout} sx={{cursor: "pointer"}}>
+                <ListItemText primary="Выйти" />
+              </ListItem>
             </List>
           </Box>
         </SwipeableDrawer>

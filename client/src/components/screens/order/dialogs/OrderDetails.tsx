@@ -23,7 +23,7 @@ export const OrderDetails: FC<IProps> = ({ onClose, open, goods, totalPrice }) =
         {goods.map((basketItem, i, arr) => {
           const { item, count } = basketItem
           return (
-            <Grid item key={item.id}>
+            <Grid item key={item.id} xs={12}>
               <OrderItem
                 divider={arr.length - 1 === i}
                 item={item}

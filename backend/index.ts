@@ -12,6 +12,7 @@ import { certificateRouter } from './src/certificate/certificate.router';
 import { goodsRouter } from './src/goods/goods.router';
 import { curierRouter } from './src/curier/curier.router';
 import { productRouter } from './src/product/product.router';
+process.env.TZ = "UTC"
 AppDataSource
   .initialize()
   .then(async (connection) => {

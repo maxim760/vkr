@@ -129,6 +129,7 @@ class AuthController {
     }
     login(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("try login");
             try {
                 passport_1.default.authenticate('local', (err, user, info) => __awaiter(this, void 0, void 0, function* () {
                     if (err || !user) {
@@ -143,6 +144,7 @@ class AuthController {
                 }))(req, res, next);
             }
             catch (e) {
+                console.log("catch login");
                 return res.status(500).json({ message: "Ошибка авторизации" });
             }
         });

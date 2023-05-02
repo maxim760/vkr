@@ -17,8 +17,11 @@ const user_repo_1 = require("../../user/user.repo");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const applyLocalStrategy = (passport) => {
     passport.use("local", new passport_local_1.Strategy({ usernameField: "email", passwordField: "password" }, (email, password, done) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("local strategy");
         const user = yield user_repo_1.userRepo.findOne({ where: { email }, relations: { roles: true } });
+        console.log("local strategy after find");
         if (!user) {
+            console.log("not user");
             return done(null, false, { message: 'Пользователь с таким email не найден.' });
         }
         const equalsPassword = yield bcrypt_1.default.compare(password, (user === null || user === void 0 ? void 0 : user.password) || "");

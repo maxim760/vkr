@@ -9,6 +9,6 @@ export const AppDataSource = new DataSource({
   url: process.env.DB_CONNECT_URL,
   synchronize: false,
   logging: false,
-  entities: [__dirname + '/../**/*.entity.js'],
+  entities: [__dirname + '/../../../**/*.entity.js'],
   subscribers: [],
 })

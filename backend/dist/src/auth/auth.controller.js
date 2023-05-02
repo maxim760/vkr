@@ -132,6 +132,7 @@ class AuthController {
             console.log("try login");
             try {
                 passport_1.default.authenticate('local', (err, user, info) => __awaiter(this, void 0, void 0, function* () {
+                    console.log();
                     if (err || !user) {
                         return res.status(401).json({ message: 'Неправильные email или пароль.', login: true });
                     }

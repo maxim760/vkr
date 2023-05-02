@@ -15,6 +15,6 @@ exports.AppDataSource = new typeorm_1.DataSource({
     url: process.env.DB_CONNECT_URL,
     synchronize: false,
     logging: false,
-    entities: [__dirname + '/../**/*.entity.{js,ts}'],
+    entities: [__dirname + '/../../../**/*.entity.js'],
     subscribers: [],
 });

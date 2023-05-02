@@ -107,7 +107,8 @@ class AuthController {
       console.log("set new cookie", newTokens.refreshToken)
       res.setHeader("Set-Cookie", cookie.serialize("refreshToken", newTokens.refreshToken, {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'none',
+        secure: true,
         maxAge: 30 * 24 * 60 * 60 * 1000,
         path: '/'
       }))
@@ -132,7 +133,8 @@ class AuthController {
         console.log("set new cookie login", newTokens.refreshToken)
         res.setHeader("Set-Cookie", cookie.serialize("refreshToken", newTokens.refreshToken, {
           httpOnly: true,
-          sameSite: 'lax',
+          sameSite: 'none',
+          secure: true,
           maxAge: 30 * 24 * 60 * 60 * 1000,
           path: '/'
         }))
@@ -147,7 +149,7 @@ class AuthController {
 
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
-      res.clearCookie("refreshToken", {sameSite: "lax"});
+      res.clearCookie("refreshToken", {sameSite: "none"});
       const user = await userRepo.findOneBy({ id: req.user?.id || "" })
       if (user) {
         user.refreshToken = ""
@@ -175,7 +177,8 @@ class AuthController {
         console.log("set new cookie", (req.user as any).tokens.refreshToken)
         res.setHeader("Set-Cookie", cookie.serialize("refreshToken", (req.user as any).tokens.refreshToken, {
           httpOnly: true,
-          sameSite: 'lax',
+          sameSite: 'none',
+          secure: true,
           maxAge: 30 * 24 * 60 * 60 * 1000,
           path: '/'
         }))
@@ -266,7 +269,7 @@ class AuthController {
 
   async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
-      res.clearCookie("refreshToken", {sameSite: "lax"});
+      res.clearCookie("refreshToken", {sameSite: "none"});
       const id = req.user?.id
       const user = await userRepo.findOne({ where: { id }})
       if (!user) {

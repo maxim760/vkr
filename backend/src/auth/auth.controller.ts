@@ -111,6 +111,7 @@ class AuthController {
   }
 
   async login(req: TypedRequestBody<LoginUserDto>, res: Response, next: NextFunction) {
+    console.log("try login")
     try {
       passport.authenticate('local', async (err, user: User, info) => {
         if (err || !user) {
@@ -124,6 +125,7 @@ class AuthController {
         return res.json({ user: user.toJSON(), accessToken: newTokens.accessToken });
       })(req, res, next);
     } catch (e) {
+      console.log("catch login")
       return res.status(500).json({message: "Ошибка авторизации"})
     }
 

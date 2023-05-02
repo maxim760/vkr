@@ -104,7 +104,7 @@ class AuthController {
       user.refreshToken = newTokens.refreshToken
       await userRepo.save(user)
       console.log("set new cookie", newTokens.refreshToken)
-      res.cookie('refreshToken', newTokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      res.cookie('refreshToken', newTokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "none"})
       return res.json({ user: user.toJSON() });
     } catch (e) {
       return res.status(500).json({ message: 'Не удалось создать пользователя.' })
@@ -124,7 +124,7 @@ class AuthController {
         user.refreshToken = newTokens.refreshToken
         await userRepo.save(user)
         console.log("set new cookie login", newTokens.refreshToken)
-        res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+        res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "none" })
         return res.json({ user: user.toJSON(), accessToken: newTokens.accessToken });
       })(req, res, next);
     } catch (e) {
@@ -136,7 +136,7 @@ class AuthController {
 
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
-      res.clearCookie("refreshToken");
+      res.clearCookie("refreshToken", {sameSite: "none"});
       const user = await userRepo.findOneBy({ id: req.user?.id || "" })
       if (user) {
         user.refreshToken = ""
@@ -162,7 +162,7 @@ class AuthController {
       if ((req.user as any)?.tokens) {
         console.log("set cookies")
         console.log("set new cookie", (req.user as any).tokens.refreshToken)
-        res.cookie('refreshToken', (req.user as any).tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+        res.cookie('refreshToken', (req.user as any).tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "none"})
       }
       
       res.send(`
@@ -250,7 +250,7 @@ class AuthController {
 
   async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
-      res.clearCookie("refreshToken");
+      res.clearCookie("refreshToken", {sameSite: "none"});
       const id = req.user?.id
       const user = await userRepo.findOne({ where: { id }})
       if (!user) {

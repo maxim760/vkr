@@ -120,7 +120,7 @@ class AuthController {
                 user.refreshToken = newTokens.refreshToken;
                 yield user_repo_1.userRepo.save(user);
                 console.log("set new cookie", newTokens.refreshToken);
-                res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+                res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "none" });
                 return res.json({ user: user.toJSON() });
             }
             catch (e) {
@@ -142,7 +142,7 @@ class AuthController {
                     user.refreshToken = newTokens.refreshToken;
                     yield user_repo_1.userRepo.save(user);
                     console.log("set new cookie login", newTokens.refreshToken);
-                    res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+                    res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "none" });
                     return res.json({ user: user.toJSON(), accessToken: newTokens.accessToken });
                 }))(req, res, next);
             }
@@ -156,7 +156,7 @@ class AuthController {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                res.clearCookie("refreshToken");
+                res.clearCookie("refreshToken", { sameSite: "none" });
                 const user = yield user_repo_1.userRepo.findOneBy({ id: ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) || "" });
                 if (user) {
                     user.refreshToken = "";
@@ -189,7 +189,7 @@ class AuthController {
                 if ((_a = req.user) === null || _a === void 0 ? void 0 : _a.tokens) {
                     console.log("set cookies");
                     console.log("set new cookie", req.user.tokens.refreshToken);
-                    res.cookie('refreshToken', req.user.tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+                    res.cookie('refreshToken', req.user.tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "none" });
                 }
                 res.send(`
         <script>
@@ -296,7 +296,7 @@ class AuthController {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                res.clearCookie("refreshToken");
+                res.clearCookie("refreshToken", { sameSite: "none" });
                 const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
                 const user = yield user_repo_1.userRepo.findOne({ where: { id } });
                 if (!user) {

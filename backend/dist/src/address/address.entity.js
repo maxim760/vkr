@@ -10,51 +10,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Address = void 0;
-var typeorm_1 = require("typeorm");
-var user_entity_1 = require("../user/user.entity");
-var Address = /** @class */ (function () {
-    function Address() {
-    }
-    __decorate([
-        (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
-        __metadata("design:type", String)
-    ], Address.prototype, "id", void 0);
-    __decorate([
-        (0, typeorm_1.OneToOne)(function () { return user_entity_1.User; }, function (user) { return user.address; }, { onDelete: "CASCADE" }),
-        (0, typeorm_1.JoinColumn)(),
-        __metadata("design:type", user_entity_1.User)
-    ], Address.prototype, "user", void 0);
-    __decorate([
-        (0, typeorm_1.Column)(),
-        __metadata("design:type", String)
-    ], Address.prototype, "country", void 0);
-    __decorate([
-        (0, typeorm_1.Column)(),
-        __metadata("design:type", String)
-    ], Address.prototype, "city", void 0);
-    __decorate([
-        (0, typeorm_1.Column)(),
-        __metadata("design:type", String)
-    ], Address.prototype, "street", void 0);
-    __decorate([
-        (0, typeorm_1.Column)(),
-        __metadata("design:type", String)
-    ], Address.prototype, "house", void 0);
-    __decorate([
-        (0, typeorm_1.Column)(),
-        __metadata("design:type", String)
-    ], Address.prototype, "entrance", void 0);
-    __decorate([
-        (0, typeorm_1.Column)(),
-        __metadata("design:type", Number)
-    ], Address.prototype, "flat", void 0);
-    __decorate([
-        (0, typeorm_1.Column)({ default: "" }),
-        __metadata("design:type", String)
-    ], Address.prototype, "commentary", void 0);
-    Address = __decorate([
-        (0, typeorm_1.Entity)({ name: "addresses" })
-    ], Address);
-    return Address;
-}());
+const typeorm_1 = require("typeorm");
+const user_entity_1 = require("../user/user.entity");
+let Address = class Address {
+};
+__decorate([
+    (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
+    __metadata("design:type", String)
+], Address.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => user_entity_1.User, (user) => user.address, { onDelete: "CASCADE" }),
+    (0, typeorm_1.JoinColumn)(),
+    __metadata("design:type", user_entity_1.User)
+], Address.prototype, "user", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Address.prototype, "country", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Address.prototype, "city", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Address.prototype, "street", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Address.prototype, "house", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Address.prototype, "entrance", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", Number)
+], Address.prototype, "flat", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: "" }),
+    __metadata("design:type", String)
+], Address.prototype, "commentary", void 0);
+Address = __decorate([
+    (0, typeorm_1.Entity)({ name: "addresses" })
+], Address);
 exports.Address = Address;

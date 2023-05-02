@@ -10,26 +10,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Role = void 0;
-var typeorm_1 = require("typeorm");
-var types_1 = require("../core/types");
-var Role = /** @class */ (function () {
-    function Role() {
-    }
-    __decorate([
-        (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
-        __metadata("design:type", String)
-    ], Role.prototype, "id", void 0);
-    __decorate([
-        (0, typeorm_1.Column)({
-            type: "enum",
-            enum: types_1.UserRole,
-            default: types_1.UserRole.User
-        }),
-        __metadata("design:type", String)
-    ], Role.prototype, "name", void 0);
-    Role = __decorate([
-        (0, typeorm_1.Entity)({ name: "roles" })
-    ], Role);
-    return Role;
-}());
+const typeorm_1 = require("typeorm");
+const types_1 = require("../core/types");
+let Role = class Role {
+};
+__decorate([
+    (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
+    __metadata("design:type", String)
+], Role.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "enum",
+        enum: types_1.UserRole,
+        default: types_1.UserRole.User
+    }),
+    __metadata("design:type", String)
+], Role.prototype, "name", void 0);
+Role = __decorate([
+    (0, typeorm_1.Entity)({ name: "roles" })
+], Role);
 exports.Role = Role;

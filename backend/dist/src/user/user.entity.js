@@ -21,82 +21,79 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
-var typeorm_1 = require("typeorm");
-var address_entity_1 = require("../address/address.entity");
-var certificate_entity_1 = require("../certificate/certificate.entity");
-var order_entity_1 = require("../order/order.entity");
-var role_entity_1 = require("../role/role.entity");
-var User = /** @class */ (function () {
-    function User() {
-    }
-    User.prototype.toJSON = function () {
-        var _a = this, refreshToken = _a.refreshToken, password = _a.password, props = __rest(_a, ["refreshToken", "password"]);
+const typeorm_1 = require("typeorm");
+const address_entity_1 = require("../address/address.entity");
+const certificate_entity_1 = require("../certificate/certificate.entity");
+const order_entity_1 = require("../order/order.entity");
+const role_entity_1 = require("../role/role.entity");
+let User = class User {
+    toJSON() {
+        const _a = this, { refreshToken, password } = _a, props = __rest(_a, ["refreshToken", "password"]);
         return props;
-    };
-    __decorate([
-        (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
-        __metadata("design:type", String)
-    ], User.prototype, "id", void 0);
-    __decorate([
-        (0, typeorm_1.Column)({ name: "first_name", default: "" }),
-        __metadata("design:type", String)
-    ], User.prototype, "firstName", void 0);
-    __decorate([
-        (0, typeorm_1.Column)({ name: "last_name", default: "" }),
-        __metadata("design:type", String)
-    ], User.prototype, "lastName", void 0);
-    __decorate([
-        (0, typeorm_1.Column)({ unique: true, nullable: false }),
-        __metadata("design:type", String)
-    ], User.prototype, "email", void 0);
-    __decorate([
-        (0, typeorm_1.Column)(),
-        __metadata("design:type", String)
-    ], User.prototype, "password", void 0);
-    __decorate([
-        (0, typeorm_1.Column)({ default: "" }),
-        __metadata("design:type", String)
-    ], User.prototype, "phone", void 0);
-    __decorate([
-        (0, typeorm_1.Column)({ default: 0 }),
-        __metadata("design:type", Number)
-    ], User.prototype, "cash", void 0);
-    __decorate([
-        (0, typeorm_1.Column)({ default: "" }),
-        __metadata("design:type", String)
-    ], User.prototype, "refreshToken", void 0);
-    __decorate([
-        (0, typeorm_1.ManyToMany)(function () { return role_entity_1.Role; }, {}),
-        (0, typeorm_1.JoinTable)(),
-        __metadata("design:type", Array)
-    ], User.prototype, "roles", void 0);
-    __decorate([
-        (0, typeorm_1.OneToMany)(function () { return certificate_entity_1.Certificate; }, function (certificate) { return certificate.fromUser; }),
-        __metadata("design:type", Array)
-    ], User.prototype, "receivedCertificates", void 0);
-    __decorate([
-        (0, typeorm_1.OneToMany)(function () { return certificate_entity_1.Certificate; }, function (certificate) { return certificate.toUser; }),
-        __metadata("design:type", Array)
-    ], User.prototype, "donatedCertificates", void 0);
-    __decorate([
-        (0, typeorm_1.OneToMany)(function () { return order_entity_1.Order; }, function (order) { return order.user; }),
-        __metadata("design:type", Array)
-    ], User.prototype, "orders", void 0);
-    __decorate([
-        (0, typeorm_1.OneToOne)(function () { return address_entity_1.Address; }, function (address) { return address.user; }),
-        __metadata("design:type", address_entity_1.Address)
-    ], User.prototype, "address", void 0);
-    __decorate([
-        (0, typeorm_1.CreateDateColumn)(),
-        __metadata("design:type", Date)
-    ], User.prototype, "created_at", void 0);
-    __decorate([
-        (0, typeorm_1.UpdateDateColumn)(),
-        __metadata("design:type", Date)
-    ], User.prototype, "updated_at", void 0);
-    User = __decorate([
-        (0, typeorm_1.Entity)({ name: "users" })
-    ], User);
-    return User;
-}());
+    }
+};
+__decorate([
+    (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
+    __metadata("design:type", String)
+], User.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: "first_name", default: "" }),
+    __metadata("design:type", String)
+], User.prototype, "firstName", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: "last_name", default: "" }),
+    __metadata("design:type", String)
+], User.prototype, "lastName", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ unique: true, nullable: false }),
+    __metadata("design:type", String)
+], User.prototype, "email", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], User.prototype, "password", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: "" }),
+    __metadata("design:type", String)
+], User.prototype, "phone", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], User.prototype, "cash", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: "" }),
+    __metadata("design:type", String)
+], User.prototype, "refreshToken", void 0);
+__decorate([
+    (0, typeorm_1.ManyToMany)(() => role_entity_1.Role, {}),
+    (0, typeorm_1.JoinTable)(),
+    __metadata("design:type", Array)
+], User.prototype, "roles", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => certificate_entity_1.Certificate, (certificate) => certificate.fromUser),
+    __metadata("design:type", Array)
+], User.prototype, "receivedCertificates", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => certificate_entity_1.Certificate, (certificate) => certificate.toUser),
+    __metadata("design:type", Array)
+], User.prototype, "donatedCertificates", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => order_entity_1.Order, (order) => order.user),
+    __metadata("design:type", Array)
+], User.prototype, "orders", void 0);
+__decorate([
+    (0, typeorm_1.OneToOne)(() => address_entity_1.Address, address => address.user),
+    __metadata("design:type", address_entity_1.Address)
+], User.prototype, "address", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], User.prototype, "created_at", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], User.prototype, "updated_at", void 0);
+User = __decorate([
+    (0, typeorm_1.Entity)({ name: "users" })
+], User);
 exports.User = User;

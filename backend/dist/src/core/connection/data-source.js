@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppDataSource = void 0;
-var typeorm_1 = require("typeorm");
-var dotenv_1 = __importDefault(require("dotenv"));
+const typeorm_1 = require("typeorm");
+const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 // todo при хостинге уже надо иметь готовую базу со всеми таблицами
 // typeorm создвать не будет, так как synchronize false
@@ -15,6 +15,6 @@ exports.AppDataSource = new typeorm_1.DataSource({
     url: process.env.DB_CONNECT_URL,
     synchronize: false,
     logging: false,
-    entities: ["./src/**/*.entity.ts"],
+    entities: ["dist/**/*.entity.js"],
     subscribers: [],
 });

@@ -10,40 +10,37 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Certificate = void 0;
-var typeorm_1 = require("typeorm");
-var user_entity_1 = require("../user/user.entity");
-var Certificate = /** @class */ (function () {
-    function Certificate() {
-    }
-    __decorate([
-        (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
-        __metadata("design:type", String)
-    ], Certificate.prototype, "id", void 0);
-    __decorate([
-        (0, typeorm_1.ManyToOne)(function () { return user_entity_1.User; }, function (user) { return user.receivedCertificates; }, { onDelete: "SET NULL", nullable: true }),
-        (0, typeorm_1.JoinColumn)({ name: "from_user" }),
-        __metadata("design:type", user_entity_1.User)
-    ], Certificate.prototype, "fromUser", void 0);
-    __decorate([
-        (0, typeorm_1.ManyToOne)(function () { return user_entity_1.User; }, function (user) { return user.donatedCertificates; }, { onDelete: "SET NULL", nullable: true }),
-        (0, typeorm_1.JoinColumn)({ name: "to_user" }),
-        __metadata("design:type", user_entity_1.User)
-    ], Certificate.prototype, "toUser", void 0);
-    __decorate([
-        (0, typeorm_1.Column)({ default: 0 }),
-        __metadata("design:type", Number)
-    ], Certificate.prototype, "price", void 0);
-    __decorate([
-        (0, typeorm_1.CreateDateColumn)(),
-        __metadata("design:type", Date)
-    ], Certificate.prototype, "created_at", void 0);
-    __decorate([
-        (0, typeorm_1.UpdateDateColumn)(),
-        __metadata("design:type", Date)
-    ], Certificate.prototype, "updated_at", void 0);
-    Certificate = __decorate([
-        (0, typeorm_1.Entity)({ name: "certificates" })
-    ], Certificate);
-    return Certificate;
-}());
+const typeorm_1 = require("typeorm");
+const user_entity_1 = require("../user/user.entity");
+let Certificate = class Certificate {
+};
+__decorate([
+    (0, typeorm_1.PrimaryGeneratedColumn)("uuid"),
+    __metadata("design:type", String)
+], Certificate.prototype, "id", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.receivedCertificates, { onDelete: "SET NULL", nullable: true }),
+    (0, typeorm_1.JoinColumn)({ name: "from_user" }),
+    __metadata("design:type", user_entity_1.User)
+], Certificate.prototype, "fromUser", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.donatedCertificates, { onDelete: "SET NULL", nullable: true }),
+    (0, typeorm_1.JoinColumn)({ name: "to_user" }),
+    __metadata("design:type", user_entity_1.User)
+], Certificate.prototype, "toUser", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ default: 0 }),
+    __metadata("design:type", Number)
+], Certificate.prototype, "price", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)(),
+    __metadata("design:type", Date)
+], Certificate.prototype, "created_at", void 0);
+__decorate([
+    (0, typeorm_1.UpdateDateColumn)(),
+    __metadata("design:type", Date)
+], Certificate.prototype, "updated_at", void 0);
+Certificate = __decorate([
+    (0, typeorm_1.Entity)({ name: "certificates" })
+], Certificate);
 exports.Certificate = Certificate;

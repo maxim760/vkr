@@ -4,15 +4,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TokenService = void 0;
-var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 exports.TokenService = {
-    createAccessToken: function (payload) {
+    createAccessToken(payload) {
         return jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" });
     },
-    createRefreshToken: function (payload) {
+    createRefreshToken(payload) {
         return jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, { expiresIn: "30d" });
     },
-    generateTokens: function (payload) {
+    generateTokens(payload) {
         return {
             accessToken: this.createAccessToken(payload),
             refreshToken: this.createRefreshToken(payload),

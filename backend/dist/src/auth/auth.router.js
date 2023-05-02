@@ -4,10 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authRouter = void 0;
-var express_1 = require("express");
-var passport_1 = __importDefault(require("passport"));
-var auth_controller_1 = __importDefault(require("./auth.controller"));
-var authRouter = (0, express_1.Router)();
+const express_1 = require("express");
+const passport_1 = __importDefault(require("passport"));
+const auth_controller_1 = __importDefault(require("./auth.controller"));
+const authRouter = (0, express_1.Router)();
 exports.authRouter = authRouter;
 authRouter.post("/registration", auth_controller_1.default.registration);
 authRouter.post("/registration/oauth2", auth_controller_1.default.registrationOauth2);

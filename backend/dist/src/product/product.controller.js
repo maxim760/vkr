@@ -8,120 +8,61 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var product_entity_1 = require("./product.entity");
-var product_repo_1 = require("./product.repo");
-var ProductController = /** @class */ (function () {
-    function ProductController() {
-    }
-    ProductController.prototype.getAll = function (req, res, next) {
+const product_entity_1 = require("./product.entity");
+const product_repo_1 = require("./product.repo");
+class ProductController {
+    getAll(req, res, next) {
         var _a;
-        return __awaiter(this, void 0, void 0, function () {
-            var result, error_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        if (!((_a = req.user) === null || _a === void 0 ? void 0 : _a.id)) {
-                            return [2 /*return*/, res.status(403).json({ data: null, message: "Нет доступа" })];
-                        }
-                        return [4 /*yield*/, product_repo_1.productRepo.find({ order: { name: "asc" } })];
-                    case 1:
-                        result = _b.sent();
-                        return [2 /*return*/, res.json({ products: result })];
-                    case 2:
-                        error_1 = _b.sent();
-                        next(error_1);
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!((_a = req.user) === null || _a === void 0 ? void 0 : _a.id)) {
+                    return res.status(403).json({ data: null, message: "Нет доступа" });
                 }
-            });
+                const result = yield product_repo_1.productRepo.find({ order: { name: "asc" } });
+                return res.json({ products: result });
+            }
+            catch (error) {
+                next(error);
+            }
         });
-    };
-    ProductController.prototype.editItem = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a, id, name_1, count, itemFromDb, result, error_2;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 3, , 4]);
-                        _a = req.body, id = _a.id, name_1 = _a.name, count = _a.count;
-                        return [4 /*yield*/, product_repo_1.productRepo.findOneByOrFail({ id: id })];
-                    case 1:
-                        itemFromDb = _b.sent();
-                        if (count < 0) {
-                            return [2 /*return*/, res.status(400).json({ message: 'Нельзя установить кол-во продуктов меньше 0' })];
-                        }
-                        itemFromDb.name = name_1;
-                        itemFromDb.count = count;
-                        return [4 /*yield*/, product_repo_1.productRepo.save(itemFromDb)];
-                    case 2:
-                        result = _b.sent();
-                        return [2 /*return*/, res.json({ data: true })];
-                    case 3:
-                        error_2 = _b.sent();
-                        next(error_2);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
+    }
+    editItem(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id, name, count } = req.body;
+                const itemFromDb = yield product_repo_1.productRepo.findOneByOrFail({ id });
+                if (count < 0) {
+                    return res.status(400).json({ message: 'Нельзя установить кол-во продуктов меньше 0' });
                 }
-            });
+                itemFromDb.name = name;
+                itemFromDb.count = count;
+                const result = yield product_repo_1.productRepo.save(itemFromDb);
+                return res.json({ data: true });
+            }
+            catch (error) {
+                next(error);
+            }
         });
-    };
-    ProductController.prototype.create = function (req, res, next) {
-        return __awaiter(this, void 0, void 0, function () {
-            var _a, name_2, count, product, result, error_3;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        _a = req.body, name_2 = _a.name, count = _a.count;
-                        if (count < 0) {
-                            return [2 /*return*/, res.status(400).json({ message: 'Нельзя установить кол-во продуктов меньше 0' })];
-                        }
-                        product = new product_entity_1.Product();
-                        product.name = name_2;
-                        product.count = count;
-                        product.goods = [];
-                        return [4 /*yield*/, product_repo_1.productRepo.save(product)];
-                    case 1:
-                        result = _b.sent();
-                        return [2 /*return*/, res.json({ data: true })];
-                    case 2:
-                        error_3 = _b.sent();
-                        next(error_3);
-                        return [3 /*break*/, 3];
-                    case 3: return [2 /*return*/];
+    }
+    create(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name, count } = req.body;
+                if (count < 0) {
+                    return res.status(400).json({ message: 'Нельзя установить кол-во продуктов меньше 0' });
                 }
-            });
+                const product = new product_entity_1.Product();
+                product.name = name;
+                product.count = count;
+                product.goods = [];
+                const result = yield product_repo_1.productRepo.save(product);
+                return res.json({ data: true });
+            }
+            catch (error) {
+                next(error);
+            }
         });
-    };
-    return ProductController;
-}());
+    }
+}
 exports.default = new ProductController;

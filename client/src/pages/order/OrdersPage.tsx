@@ -98,16 +98,8 @@ export const OrdersPage: React.FC<IProps> = ({ }) => {
                         {label: "С доставкой", value: item.withDelivery ? "Да" : "Нет"}
                       ]
                     },
-                    ...(item.curier ? [{
-                      id: "2",
-                      title: "Курьер",
-                      items: [
-                        { label: "Имя", value: item.curier.name},
-                        { label: "Телефон", value: item.curier.phone},
-                      ]
-                    }] : []),
                     ...(isAdmin ? [{
-                      id: "3",
+                      id: "2",
                       title: "Автор заказа",
                       items: item.user ? [
                         { label: "Имя", value: item.user.firstName},

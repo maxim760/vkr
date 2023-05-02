@@ -13,7 +13,6 @@ const types_1 = require("../core/types");
 const user_repo_1 = require("../user/user.repo");
 const typeorm_1 = require("typeorm");
 const order_repo_1 = require("./order.repo");
-const curier_repo_1 = require("../curier/curier.repo");
 const order_entity_1 = require("./order.entity");
 const goods_repo_1 = require("../goods/goods.repo");
 const order_goods_entity_1 = require("./order-goods.entity");
@@ -27,7 +26,7 @@ class OrderController {
                     return res.status(403).json({ data: null, message: "Нет доступа" });
                 }
                 const isAdmin = (roles || []).includes(types_1.UserRole.Admin);
-                const orders = yield order_repo_1.orderRepo.find(Object.assign(Object.assign({}, (isAdmin ? {} : { where: { user: { id } } })), { relations: { curier: true, user: true, goods: true, orderToGoods: { goods: true } }, select: { user: { firstName: true, lastName: true, id: true, phone: true, email: true } }, order: { "created_at": "desc" }, relationLoadStrategy: "query" }));
+                const orders = yield order_repo_1.orderRepo.find(Object.assign(Object.assign({}, (isAdmin ? {} : { where: { user: { id } } })), { relations: { user: true, goods: true, orderToGoods: { goods: true } }, select: { user: { firstName: true, lastName: true, id: true, phone: true, email: true } }, order: { "created_at": "desc" }, relationLoadStrategy: "query" }));
                 const totalCost = yield order_repo_1.orderRepo.sum("price", isAdmin ? undefined : { user: { id } });
                 return res.json({
                     orders,
@@ -70,18 +69,6 @@ class OrderController {
                 item.user = { id: userId };
                 if (withDelivery) {
                     totalPrice += deliveryCost;
-                    const curiers = yield curier_repo_1.curierRepo.find({ where: { status: types_1.CurierStatus.Free }, relations: { orders: true } });
-                    if (!curiers.length) {
-                        return res.status(400).json({ message: "Нет свободных курьеров" });
-                    }
-                    const count = curiers.length;
-                    const randomIdx = Math.floor(Math.random() * count);
-                    const curier = curiers[randomIdx];
-                    curier.status = types_1.CurierStatus.Busy;
-                    curier.orders || (curier.orders = []);
-                    curier.orders.push(item);
-                    item.curier = curier;
-                    yield curier_repo_1.curierRepo.save(curier);
                 }
                 if (totalPrice > currentUser.cash) {
                     return res.status(400).json({ message: "Недостаточно денег на балансе" });
@@ -118,19 +105,12 @@ class OrderController {
                 const { id } = req.body;
                 const userId = ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) || "";
                 const isAdmin = (((_b = req.user) === null || _b === void 0 ? void 0 : _b.roles) || []).includes(types_1.UserRole.Admin);
-                const itemFromDb = yield order_repo_1.orderRepo.findOneOrFail({ where: { id }, relations: { user: true, curier: true }, select: { user: { id: true } } });
+                const itemFromDb = yield order_repo_1.orderRepo.findOneOrFail({ where: { id }, relations: { user: true }, select: { user: { id: true } } });
                 if (((_c = itemFromDb === null || itemFromDb === void 0 ? void 0 : itemFromDb.user) === null || _c === void 0 ? void 0 : _c.id) !== userId && !isAdmin) {
                     return res.status(403).json({ message: "Нет доступа к этой функции" });
                 }
                 itemFromDb.done = true;
-                const curier = itemFromDb.curier;
-                if (curier != null) {
-                    curier.status = types_1.CurierStatus.Free;
-                    console.log("curier", curier);
-                    yield curier_repo_1.curierRepo.save(curier);
-                }
                 yield order_repo_1.orderRepo.save(itemFromDb);
-                console.log(itemFromDb);
                 return res.json({ data: true });
             }
             catch (error) {

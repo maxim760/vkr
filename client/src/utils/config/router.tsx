@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { RoleTypes } from "src/api/types/models/User";
 import { RequireAuth } from "src/components/utils/router/RequireAuth";
-import { CertificateGiftPage, CertificatePage, HomePage, IngredientsPage, LoginPage, MenuPage, NotFoundPage, OrdersPage, SignupPage, CurierPage } from "src/pages";
+import { CertificateGiftPage, CertificatePage, HomePage, IngredientsPage, LoginPage, MenuPage, NotFoundPage, OrdersPage, SignupPage } from "src/pages";
 import { GoodsPage } from "src/pages/GoodsPage";
 //  todo мб блок аналитики
 export const RouterPaths = {
@@ -10,7 +10,6 @@ export const RouterPaths = {
   Signup: "/signup",
   Menu: "/menu",
   Goods: "/goods",
-  Curiers: "/curiers",
   Ingredients: "/ingredients",
   Order: "/order",
   OrderHistory: "/order/history",
@@ -27,7 +26,7 @@ export const AdminLinks: IRouteLink[] = [
   {path: RouterPaths.Profile, title: "Главная"},
   {path: RouterPaths.Ingredients, title: "Ингредиенты"},
   {path: RouterPaths.Goods, title: "Блюда"},
-  {path: RouterPaths.Curiers, title: "Курьеры"},
+  {path: RouterPaths.Certificates, title: "Сертификаты"},
   {path: RouterPaths.OrderHistory, title: "Все заказы"}
 ]
 
@@ -77,14 +76,6 @@ export const router = createBrowserRouter([
     element: (
       <RequireAuth role={RoleTypes.Admin}>
         <GoodsPage />
-      </RequireAuth>
-    ),
-  },
-  {
-    path: RouterPaths.Curiers,
-    element: (
-      <RequireAuth role={RoleTypes.Admin}>
-        <CurierPage />
       </RequireAuth>
     ),
   },

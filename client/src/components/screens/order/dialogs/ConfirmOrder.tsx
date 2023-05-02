@@ -1,9 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
-import { curierApi } from 'src/api/services/curier/curierService'
 import { orderApi } from 'src/api/services/order/orderService'
 import { ConfirmDialog } from 'src/components/utils/dialogs/ConfirmDialog'
-import { getSchema } from 'src/utils/config/forms'
 import { DialogProps } from 'src/utils/types/types'
 
 type IProps = {
@@ -13,7 +11,7 @@ type IProps = {
 
 export const ConfirmOrder: FC<IProps> = ({ onClose, open, id, invalidateQuery }) => {
   const queryClient = useQueryClient()
-  const { mutateAsync, isLoading, data, error } = useMutation({
+  const { mutateAsync, isLoading } = useMutation({
     mutationFn: orderApi.confirm,
     onSuccess: () => {
       queryClient.invalidateQueries([invalidateQuery])
@@ -21,7 +19,6 @@ export const ConfirmOrder: FC<IProps> = ({ onClose, open, id, invalidateQuery })
     },
   })
   const onSubmit = () => {
-    console.log("mutate async id", id)
     mutateAsync({id})
   }
   return (

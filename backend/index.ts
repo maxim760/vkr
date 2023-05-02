@@ -90,6 +90,6 @@ app.get("/", (req, res) => res.json({message: "success"}))
 
 // app.use(ErrorHandler)
 
-app.listen(process.env.PORT, () => {
-    console.log('Сервер запущен на порту ' + process.env.PORT);
+app.listen(8000, () => {
+    console.log('Сервер запущен на порту ' + 8000);
 });

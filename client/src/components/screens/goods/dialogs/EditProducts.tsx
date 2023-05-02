@@ -4,18 +4,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { CreateGoodsDto, EditGoodsProductsDto } from 'src/api/services/goods/dto'
+import { EditGoodsProductsDto } from 'src/api/services/goods/dto'
 import { goodsApi } from 'src/api/services/goods/goodsService'
 import { IGoods } from 'src/api/services/goods/response'
-import { EditProductDto } from 'src/api/services/product/dto'
 import { productApi } from 'src/api/services/product/productService'
 import { CloseButton } from 'src/components/ui/buttons/CloseButton'
 import { SaveButton } from 'src/components/ui/buttons/SaveButton'
 import { AppDialog } from 'src/components/ui/dialogs/AppDialog'
 import { FormComplete } from 'src/components/ui/form/FormComplete'
-import { Input } from 'src/components/ui/form/Input'
-import { MultilineInput } from 'src/components/ui/form/MultilineInput'
-import { PhoneInput } from 'src/components/ui/form/PhoneInput'
 import { FormFields, getSchema } from 'src/utils/config/forms'
 import { DialogProps, IComplete } from 'src/utils/types/types'
 
@@ -33,13 +29,13 @@ type IProps = {
 } & DialogProps
 
 export const EditProducts: FC<IProps> = ({ onClose, open, invalidateQuery, item, id }) => {
-  const { isLoading: ingrediendsLoading,data: ingrediends, error: errorIngredients } = useQuery({
+  const { isLoading: ingrediendsLoading,data: ingrediends } = useQuery({
     queryFn: productApi.get,
     queryKey: ["ingredients"],
     onError: () => toast.error("Не загружены ингредиенты")
   })
   const queryClient = useQueryClient()
-  const { mutateAsync, isLoading, data, error } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: goodsApi.editProducts,
     onSuccess: () => {
       queryClient.invalidateQueries([invalidateQuery])
@@ -54,13 +50,12 @@ export const EditProducts: FC<IProps> = ({ onClose, open, invalidateQuery, item,
   const { handleSubmit } = methods
   const onSubmit = (data: EditGoodsProducts) => {
     const {products, ...other} = data
-    mutateAsync({...other, id, products: products.map(item => item.id)})
+    mutate({...other, id, products: products.map(item => item.id)})
   }
   const options: IComplete[] = (ingrediends || [])?.map(item => ({
     id: item.id,
     label: item.name
   }))
-  console.log({defaultProducts, options, item})
   return (
     <AppDialog onClose={onClose} open={open} title="Измените состав" maxWidth="md" fullWidth>
       <FormProvider {...methods}>

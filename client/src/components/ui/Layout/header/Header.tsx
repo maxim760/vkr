@@ -2,19 +2,16 @@ import { FC, useState } from 'react'
 import { LogoIcon } from 'src/assets/icons/LogoIcon'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
-import CssBaseline from '@mui/material/CssBaseline'
 import Divider from '@mui/material/Divider'
 import SwipeableDrawer from '@mui/material/SwipeableDrawer'
 import IconButton from '@mui/material/IconButton'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import MenuIcon from '@mui/icons-material/Menu'
 import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-import { alpha, Container, Link } from '@mui/material'
+import { Container, Link } from '@mui/material'
 import { useAuthStore } from 'src/store/profile/authStore'
 import { authApi } from 'src/api/services/auth/authService'
 import { useMutation } from '@tanstack/react-query'
@@ -27,8 +24,8 @@ interface IProps {}
 
 const drawerWidth = 240
 
-export const Header: FC<IProps> = ({}) => {
-  const { mutateAsync, isLoading, data } = useMutation({
+export const Header: FC<IProps> = () => {
+  const { mutate } = useMutation({
     mutationFn: authApi.logout,
   })
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -41,7 +38,7 @@ export const Header: FC<IProps> = ({}) => {
   }
   const onClickLogout = async () => {
     try {
-      await mutateAsync()
+      await mutate()
     } catch (e) {
       console.log('logout error', e)
     } finally {

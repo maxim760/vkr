@@ -13,11 +13,10 @@ import { AppDialog } from 'src/components/ui/dialogs/AppDialog'
 import { FormComplete } from 'src/components/ui/form/FormComplete'
 import { Input } from 'src/components/ui/form/Input'
 import { MultilineInput } from 'src/components/ui/form/MultilineInput'
-import { PhoneInput } from 'src/components/ui/form/PhoneInput'
 import { FormFields, getSchema } from 'src/utils/config/forms'
 import { DialogProps, IComplete } from 'src/utils/types/types'
 
-type CreateGoods = Omit<CreateGoodsDto, "products"> & {products: IComplete[]}
+type CreateGoodsType = Omit<CreateGoodsDto, "products"> & {products: IComplete[]}
 
 const getValidationSchema = () =>
   getSchema<CreateGoodsDto>({
@@ -34,13 +33,13 @@ type IProps = {
 } & DialogProps
 
 export const CreateGoods: FC<IProps> = ({ onClose, open, invalidateQuery }) => {
-  const { isLoading: ingrediendsLoading,data: ingrediends, error: errorIngredients } = useQuery({
+  const { isLoading: ingrediendsLoading,data: ingrediends } = useQuery({
     queryFn: productApi.get,
     queryKey: ["ingredients"],
     onError: () => toast.error("Не загружены ингредиенты")
   })
   const queryClient = useQueryClient()
-  const { mutateAsync, isLoading, data, error } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: goodsApi.create,
     onSuccess: () => {
       queryClient.invalidateQueries([invalidateQuery])
@@ -48,14 +47,14 @@ export const CreateGoods: FC<IProps> = ({ onClose, open, invalidateQuery }) => {
     },
   })
 
-  const methods = useForm<CreateGoods>({
+  const methods = useForm<CreateGoodsType>({
     resolver: yupResolver(getValidationSchema()),
     defaultValues: {},
   })
   const { handleSubmit } = methods
-  const onSubmit = (data: CreateGoods) => {
+  const onSubmit = (data: CreateGoodsType) => {
     const {products, ...other} = data
-    mutateAsync({...other, products: products.map(item => item.id)})
+    mutate({...other, products: products.map(item => item.id)})
   }
   const options: IComplete[] = (ingrediends || [])?.map(item => ({
     id: item.id,

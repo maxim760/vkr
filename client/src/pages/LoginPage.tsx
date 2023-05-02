@@ -1,10 +1,8 @@
 import { Box, Paper, Typography, Divider, Link } from '@mui/material'
 import React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { authApi } from 'src/api/services/auth/authService'
 import { LoginFields } from 'src/components/screens/login/LoginFields'
 import { SignupDialog } from 'src/components/screens/signup/SignupDialog'
-import { SignupFields } from 'src/components/screens/signup/SignupFields'
 import { SocialButtons } from 'src/components/screens/signup/SocialButtons'
 import { Layout } from 'src/components/ui/Layout/layout/Layout'
 import { RouterPaths } from 'src/utils/config/router'
@@ -14,9 +12,8 @@ interface IProps {
   
 }
 
-export const LoginPage: React.FC<IProps> = ({ }) => {
+export const LoginPage: React.FC<IProps> = () => {
   const { onClickSocial, openDialog, setOpenDialog, defaultForm } = useSocialButtons()
-  console.log({openDialog, defaultForm})
   return (
     <Layout title="Авторизация" hideHeader>
       <Box maxWidth="sm" sx={{mx: "auto"}}>

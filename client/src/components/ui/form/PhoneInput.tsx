@@ -1,5 +1,5 @@
 import {FC} from 'react'
-import { useForm, Controller, ControllerRenderProps, useFormContext } from "react-hook-form";
+import { Controller, ControllerRenderProps, useFormContext } from "react-hook-form";
 import NumberFormat, { NumberFormatValues , } from 'react-number-format'
 import { PHONE_LENGTH } from 'src/utils/config/forms';
 import { getPhoneNum, MASK_SYM } from 'src/utils/functions/phone';
@@ -37,7 +37,7 @@ export const PhoneInput: FC<IProps> = ({name}) => {
   }
   return (
     <Controller
-      render={({ field: { value, onBlur, onChange },  }) => {
+      render={({ field: { value, onBlur, onChange }, }) => {
         return (
           <NumberFormat
             format="+7 (###) ###-##-##"

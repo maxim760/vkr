@@ -1,4 +1,4 @@
-import { IAddress, IAddressResponse } from "./Address"
+import { IAddressResponse } from "./Address"
 
 export enum RoleTypes {
   Admin = "admin",

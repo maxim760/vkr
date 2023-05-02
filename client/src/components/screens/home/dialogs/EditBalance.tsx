@@ -1,5 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -22,7 +22,7 @@ type IProps = {
 
 export const EditBalance: FC<IProps> = ({ onClose, open }) => {
   const queryClient = useQueryClient()
-  const { mutateAsync, isLoading, data, error } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: authApi.editBalance,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['me'] })
@@ -36,7 +36,7 @@ export const EditBalance: FC<IProps> = ({ onClose, open }) => {
   })
   const { handleSubmit } = methods
   const onSubmit = (data: EditUserBalanceDto) => {
-    mutateAsync(data)
+    mutate(data)
   }
   return (
     <AppDialog onClose={onClose} open={open} title="Изменение баланса" maxWidth="xs" fullWidth>

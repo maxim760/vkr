@@ -1,4 +1,3 @@
-import { IAddress } from "src/api/types/models/Address"
 import * as yup from "yup"
 export const PASS_MIN = 6
 export const PASS_MAX = 24

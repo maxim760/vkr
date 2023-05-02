@@ -1,4 +1,3 @@
-import { Dialog, Typography } from '@mui/material'
 import {FC} from 'react'
 import { AppDialog } from 'src/components/ui/dialogs/AppDialog'
 import { IForm, SignupFields } from './SignupFields'
@@ -12,7 +11,6 @@ type IProps = {
 
 export const SignupDialog: FC<IProps> = ({openDialog, setOpenDialog, defaultForm, oauth}) => {
   const onClose = () => {
-    console.log("on close")
     setOpenDialog(false)
   }
   return (

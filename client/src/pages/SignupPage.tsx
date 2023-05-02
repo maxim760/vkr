@@ -1,13 +1,10 @@
-import { Box, Button, Dialog, Divider, Grid, IconButton, Link, Paper, TextField, Tooltip, Typography } from '@mui/material'
-import { useMutation } from '@tanstack/react-query'
-import React, { useCallback, useEffect, useState } from 'react'
+import { Box, Divider, Link, Paper, Typography } from '@mui/material'
+import React from 'react'
 import {Link as RouterLink} from "react-router-dom"
-import { authApi } from 'src/api/services/auth/authService'
 import { SignupDialog } from 'src/components/screens/signup/SignupDialog'
 import { SignupFields } from 'src/components/screens/signup/SignupFields'
 import { SocialButtons } from 'src/components/screens/signup/SocialButtons'
 import { Layout } from 'src/components/ui/Layout/layout/Layout'
-import { useAuthStore } from 'src/store/profile/authStore'
 import { RouterPaths } from 'src/utils/config/router'
 import { useSocialButtons } from 'src/utils/hooks/auth/useSocialButtons'
 
@@ -15,7 +12,7 @@ interface IProps {
   
 }
 
-export const SignupPage: React.FC<IProps> = ({ }) => {
+export const SignupPage: React.FC<IProps> = () => {
   const {onClickSocial, openDialog, setOpenDialog, defaultForm} = useSocialButtons()
   return (
     <Layout hideHeader title="Регистрация">

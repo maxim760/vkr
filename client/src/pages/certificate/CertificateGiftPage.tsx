@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { authApi } from 'src/api/services/auth/authService'
@@ -17,7 +17,6 @@ import { Input } from 'src/components/ui/form/Input'
 import { AppButton } from 'src/components/ui/buttons/AppButton'
 import { useDialog } from 'src/utils/hooks/common/useDialog'
 import { GiftCertificate } from 'src/components/screens/certificate/dialogs/GiftCertificate'
-import { useNavigate } from 'react-router-dom'
 import { BalanceChip } from 'src/components/ui/BalanceChip/BalanceChip'
 const getValidationSchema = () =>
   getSchema<FindUsersDto>({
@@ -28,21 +27,18 @@ interface IProps {
   
 }
 
-export const CertificateGiftPage: React.FC<IProps> = ({ }) => {
+export const CertificateGiftPage: React.FC<IProps> = () => {
   const {dialog, onClose, onOpen} = useDialog<null | string>()
   const methods = useForm<FindUsersDto>({
     resolver: yupResolver(getValidationSchema()),
     defaultValues: {query: ""},
   })
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const { handleSubmit, watch } = methods
   const query = watch("query")
-  const { isLoading, isFetching, status,  data, error, refetch, isRefetching } = useQuery({
+  const { isLoading, data, error, refetch, isRefetching } = useQuery({
     queryFn: () => authApi.getUsers({ query }),
     queryKey: ["users"],
   })
-  console.log({isLoading, isFetching, status, isRefetching})
   const onSubmit = () => {
     refetch()
   }

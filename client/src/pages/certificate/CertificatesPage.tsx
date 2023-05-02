@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -10,7 +10,7 @@ import { IGroup, PropertiesCard } from 'src/components/ui/PropertiesCard/Propert
 import { ErrorMessage } from 'src/components/ui/statuses/ErrorMessage'
 import { Loader } from 'src/components/ui/statuses/Loader'
 import { hasOnlyData } from 'src/utils/config/config'
-import { CurrencyFormatter, DateTimeFormatter, DayFormatter } from 'src/utils/config/formatters'
+import { CurrencyFormatter, DateTimeFormatter } from 'src/utils/config/formatters'
 import { RouterPaths } from 'src/utils/config/router'
 
 interface IProps {
@@ -28,9 +28,8 @@ const toPropertiesCard = (item: ICertificate, field: CertUserKeys, label: string
   }
 }
 
-export const CertificatePage: React.FC<IProps> = ({ }) => {
+export const CertificatePage: React.FC<IProps> = () => {
   const { isLoading, data, error } = useQuery({ queryFn: certificateApi.get, queryKey: ["certificates"] })
-  console.log({data})
   return (
     <Layout title="Сертификаты">
       {isLoading && <Loader />}
@@ -62,15 +61,6 @@ export const CertificatePage: React.FC<IProps> = ({ }) => {
         </Grid>
         </Box>
       )}
-      {/* {isLoading ? <CircularProgress /> : (
-        <Box maxWidth="sm" sx={{ display: "flex", mx: "auto", mt: "30px" }}>
-          <PropertiesCard
-            sx={{width: "100%"}}
-            title="Профиль"
-            groups={userCardData}
-          />
-        </Box>
-      )} */}
     </Layout>
   )
 }

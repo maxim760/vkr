@@ -1,20 +1,16 @@
-import { Grid, Typography, TextField, Button, IconButton, Box } from '@mui/material'
-import { LoadingButton } from '@mui/lab'
+import { Grid, Typography, IconButton, Box } from '@mui/material'
 import { FC, useEffect } from 'react'
-import NumberFormat from 'react-number-format'
 import {yupResolver} from "@hookform/resolvers/yup"
-import { useForm, Controller, ControllerRenderProps, FormProvider } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import * as yup from "yup";
 import { usePassword } from 'src/utils/hooks/common/usePassword';
-import { IAddress } from 'src/api/types/models/Address';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from 'src/store/profile/authStore';
 import { authApi } from 'src/api/services/auth/authService'
 import { useNavigate } from 'react-router-dom'
-import { FormFields, FormMessages } from 'src/utils/config/forms'
+import { FormFields } from 'src/utils/config/forms'
 import { tokenService } from 'src/utils/config/tokens'
 import { AppButton } from 'src/components/ui/buttons/AppButton'
-import { FormComplete } from 'src/components/ui/form/FormComplete'
 import { Input } from 'src/components/ui/form/Input'
 import { RouterPaths } from 'src/utils/config/router'
 
@@ -26,10 +22,7 @@ type ILoginForm = {
 
 const getValidationSchema = () => {
   const email = FormFields.RequiredEmail
-  
   const password = FormFields.RequiredStr
-  const test = FormFields.RequiredComplete
-  const test2 = FormFields.RequiredCompleteMultiple
   return yup.object().shape({password, email})
 }
 
@@ -38,21 +31,17 @@ type IProps = {
 }
 
 
-export const LoginFields: FC<IProps> = ({}) => {
+export const LoginFields: FC<IProps> = () => {
   const navigate = useNavigate()
   const setUser = useAuthStore(state => state.setUser)
-  const { mutateAsync, isLoading, data, error } = useMutation({ mutationFn: authApi.login })
-  useEffect(() => {
-    if (error) {
-      console.log("error ??? login", error)
-    }
-  }, [error])
+  const { mutate, isLoading, data } = useMutation({ mutationFn: authApi.login })
   useEffect(() => {
     if (data) {
       tokenService.setAccessToken(data.accessToken)
       setUser(data.user)
       navigate(RouterPaths.Profile)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
   const methods = useForm<ILoginForm>({
     resolver: yupResolver(getValidationSchema()),
@@ -61,9 +50,9 @@ export const LoginFields: FC<IProps> = ({}) => {
       password: "",
     }
   })
-  const { register, handleSubmit, watch, control, formState: {isSubmitted, errors}, trigger } = methods
+  const { handleSubmit } = methods
   const onSubmit = async (form: ILoginForm) => {
-    mutateAsync({
+    mutate({
       email: form.email,
       password: form.password
     })

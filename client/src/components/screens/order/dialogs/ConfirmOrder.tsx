@@ -11,7 +11,7 @@ type IProps = {
 
 export const ConfirmOrder: FC<IProps> = ({ onClose, open, id, invalidateQuery }) => {
   const queryClient = useQueryClient()
-  const { mutateAsync, isLoading } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: orderApi.confirm,
     onSuccess: () => {
       queryClient.invalidateQueries([invalidateQuery])
@@ -19,7 +19,7 @@ export const ConfirmOrder: FC<IProps> = ({ onClose, open, id, invalidateQuery })
     },
   })
   const onSubmit = () => {
-    mutateAsync({id})
+    mutate({id})
   }
   return (
     <ConfirmDialog

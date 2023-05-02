@@ -1,20 +1,17 @@
-import { Grid, Typography, TextField, Button, IconButton, Box } from '@mui/material'
-import { LoadingButton } from '@mui/lab'
+import { Grid, Typography, IconButton, Box } from '@mui/material'
 import { FC, useEffect } from 'react'
-import NumberFormat, { NumberFormatValues , } from 'react-number-format'
-
 import {yupResolver} from "@hookform/resolvers/yup"
-import { useForm, Controller, ControllerRenderProps, FormProvider } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import * as yup from "yup";
 import { usePassword } from 'src/utils/hooks/common/usePassword';
 import { IAddress } from 'src/api/types/models/Address';
 import { useMutation } from '@tanstack/react-query';
 import { authApi } from 'src/api/services/auth/authService'
 import { useNavigate } from 'react-router-dom'
-import { FormFields, FormMessages, PASS_MAX, PASS_MIN, PHONE_LENGTH } from 'src/utils/config/forms'
+import { FormFields } from 'src/utils/config/forms'
 import { useAuthStore } from 'src/store/profile/authStore'
 import { tokenService } from 'src/utils/config/tokens'
-import { getPhoneNum, MASK_SYM } from 'src/utils/functions/phone'
+import { getPhoneNum } from 'src/utils/functions/phone'
 import { PhoneInput } from 'src/components/ui/form/PhoneInput'
 import { Input } from 'src/components/ui/form/Input'
 import { MultilineInput } from 'src/components/ui/form/MultilineInput'
@@ -70,13 +67,8 @@ type IProps = {
 export const SignupFields: FC<IProps> = ({ hideTitle, defaultValues, hidePassword, onClose, oauth}) => {
   const navigate = useNavigate()
   const setUser = useAuthStore(state => state.setUser)
-  const { mutateAsync: mutateRegister, isLoading: isLoadingReg, data, error } = useMutation({ mutationFn: authApi.register })
-  const { mutateAsync: mutateRegisterOauth, isLoading: isLoadingRegOauth, data: dataOauth, error: errorOauth } = useMutation({ mutationFn: authApi.registerOauth2 })
-  useEffect(() => {
-    if (error || errorOauth) {
-      console.log("error ???", error)
-    }
-  }, [error, errorOauth])
+  const { mutate: mutateRegister, isLoading: isLoadingReg, data } = useMutation({ mutationFn: authApi.register })
+  const { mutate: mutateRegisterOauth, isLoading: isLoadingRegOauth, data: dataOauth } = useMutation({ mutationFn: authApi.registerOauth2 })
   useEffect(() => {
     if (data) {
       if (onClose) {
@@ -84,7 +76,8 @@ export const SignupFields: FC<IProps> = ({ hideTitle, defaultValues, hidePasswor
       }
       navigate(RouterPaths.Login)
     }
-  }, [data, dataOauth])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
   useEffect(() => {
     if (dataOauth) {
       if (onClose) {
@@ -94,7 +87,8 @@ export const SignupFields: FC<IProps> = ({ hideTitle, defaultValues, hidePasswor
       setUser(dataOauth.user)
       navigate(RouterPaths.Profile)
     }
-  }, [data, dataOauth])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataOauth])
   const methods = useForm<IForm>({
     resolver: yupResolver(getValidationSchema({hidePassword})),
     defaultValues: {
@@ -113,9 +107,8 @@ export const SignupFields: FC<IProps> = ({ hideTitle, defaultValues, hidePasswor
       repeatPassword: ""
     }
   })
-  const { register, handleSubmit, watch, control, formState: {isSubmitted, errors}, trigger } = methods
+  const { handleSubmit, watch, formState: {isSubmitted}, trigger } = methods
   const onSubmit = async (form: IForm) => {
-    console.log(form)
     const method = oauth ? mutateRegisterOauth : mutateRegister
     method({
       user: {

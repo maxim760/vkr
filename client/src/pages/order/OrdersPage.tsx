@@ -1,42 +1,24 @@
 import { Alert, Grid, Typography } from '@mui/material'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import React from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { authApi } from 'src/api/services/auth/authService'
-import { FindUsersDto } from 'src/api/services/auth/dto'
 import { Layout } from 'src/components/ui/Layout/layout/Layout'
 import { PropertiesCard } from 'src/components/ui/PropertiesCard/PropertiesCard'
 import { ErrorMessage } from 'src/components/ui/statuses/ErrorMessage'
 import { Loader } from 'src/components/ui/statuses/Loader'
-import { TooltipButton } from 'src/components/ui/TooltipButton/TooltipButton'
 import { hasOnlyData } from 'src/utils/config/config'
-import { FormFields, getSchema } from 'src/utils/config/forms'
-import SearchIcon from '@mui/icons-material/Search';
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Input } from 'src/components/ui/form/Input'
 import { AppButton } from 'src/components/ui/buttons/AppButton'
 import { useDialog } from 'src/utils/hooks/common/useDialog'
-import { GiftCertificate } from 'src/components/screens/certificate/dialogs/GiftCertificate'
-import { useNavigate } from 'react-router-dom'
-import { BalanceChip } from 'src/components/ui/BalanceChip/BalanceChip'
-import { productApi } from 'src/api/services/product/productService'
-import { Actions } from 'src/components/ui/Actions/Actions'
-import { CreateIngredient } from 'src/components/screens/ingrediends/dialogs/CreateIngredient'
-import { EditIngredient } from 'src/components/screens/ingrediends/dialogs/EditIngredient'
-import { IProduct } from 'src/api/services/product/response'
 import { QueryKeys } from 'src/utils/config/query/constants'
 import { orderApi } from 'src/api/services/order/orderService'
 import { IGoodsWithCount } from 'src/store/order/basketStore'
-import { CurrencyFormatter, DateTimeFormatter } from 'src/utils/config/formatters'
+import { CurrencyFormatter, DateTimeFormatter, PhoneFormatter } from 'src/utils/config/formatters'
 import { Box } from '@mui/system'
 import { ConfirmOrder } from 'src/components/screens/order/dialogs/ConfirmOrder'
 import { OrderDetails } from 'src/components/screens/order/dialogs/OrderDetails'
 import { useAuthStore } from 'src/store/profile/authStore'
 import { RoleTypes } from 'src/api/types/models/User'
 
-interface IProps {
-  
-}
+interface IProps {}
 
 
 enum Dialogs {
@@ -50,7 +32,7 @@ type IDialog = {
   price: number
 }
 const queryKey = QueryKeys.HistoryOrders
-export const OrdersPage: React.FC<IProps> = ({ }) => {
+export const OrdersPage: React.FC<IProps> = () => {
   const user = useAuthStore(state => state.user)
   const isAdmin = user?.roles?.some((item) => item.name === RoleTypes.Admin)
   const {dialog, onClose, onOpen} = useDialog<IDialog>()
@@ -58,7 +40,6 @@ export const OrdersPage: React.FC<IProps> = ({ }) => {
     queryFn: orderApi.get,
     queryKey: [queryKey],
     select: (response) => {
-      console.log(response)
       return {
         ...response,
         orders: response.orders.map(item => ({
@@ -74,8 +55,6 @@ export const OrdersPage: React.FC<IProps> = ({ }) => {
       }
     }
   })
-  console.log(data)
-  console.log(dialog)
   return (
     <Layout title="История заказов">
       {isLoading && <Loader />}
@@ -105,7 +84,7 @@ export const OrdersPage: React.FC<IProps> = ({ }) => {
                         { label: "Имя", value: item.user.firstName},
                         { label: "Фамилия", value: item.user.lastName},
                         { label: "Почта", value: item.user.email},
-                        { label: "Телефон", value: item.user.phone},
+                        { label: "Телефон", value: PhoneFormatter.format(item.user.phone)},
                       ] : [
                         {label: "Аккаунт", value: "DELETED"}
                       ]

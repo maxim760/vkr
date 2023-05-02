@@ -1,17 +1,13 @@
-import { Badge, Box, Fab, Grid, IconButton, Typography } from '@mui/material'
+import { Badge, Fab, Grid, Typography } from '@mui/material'
 import React from 'react'
 import { Layout } from 'src/components/ui/Layout/layout/Layout'
 import { ErrorMessage } from 'src/components/ui/statuses/ErrorMessage'
 import { Loader } from 'src/components/ui/statuses/Loader'
 import { hasOnlyData } from 'src/utils/config/config'
-import { AppButton } from 'src/components/ui/buttons/AppButton'
 import { useDialog } from 'src/utils/hooks/common/useDialog'
 import { useMenuSearch } from 'src/utils/hooks/menu/useMenuSearch'
 import { SearchBar } from 'src/components/screens/menu/SearchBar'
 import { GoodsCard } from 'src/components/screens/goods/GoodsCard'
-import { EditGoodsItem } from 'src/components/screens/goods/dialogs/EditGoodsItem'
-import { EditDiscount } from 'src/components/screens/goods/dialogs/EditDiscount'
-import { EditProducts } from 'src/components/screens/goods/dialogs/EditProducts'
 
 import { shallow } from 'zustand/shallow'
 import {
@@ -20,8 +16,6 @@ import {
   useBasketStore,
 } from 'src/store/order/basketStore'
 
-import MinusIcon from '@mui/icons-material/Remove'
-import PlusIcon from '@mui/icons-material/Add'
 import { BasketActions } from 'src/components/screens/goods/BasketActions'
 import { Basket } from 'src/components/screens/goods/dialogs/Basket'
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket'
@@ -35,12 +29,12 @@ type IDialog = {
   type: Dialogs
 }
 
-export const MenuPage: React.FC<IProps> = ({}) => {
+export const MenuPage: React.FC<IProps> = () => {
   const basket = useBasketStore(selectBasket)
   const differentPositionsLen = Object.keys(basket).length
   const actions = useBasketStore(selectBasketActions, shallow)
   const { dialog, onClose, onOpen } = useDialog<IDialog>()
-  const { methods, queryData, invalidateQuery } = useMenuSearch({
+  const { methods, queryData } = useMenuSearch({
     onlyActive: true,
   })
   const { isLoading, data, error, isRefetching, refetch } = queryData

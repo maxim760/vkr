@@ -5,7 +5,6 @@ import {FC} from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { authApi } from 'src/api/services/auth/authService'
 import { IAddress } from 'src/api/types/models/Address'
-import { AppButton } from 'src/components/ui/buttons/AppButton'
 import { CloseButton } from 'src/components/ui/buttons/CloseButton'
 import { SaveButton } from 'src/components/ui/buttons/SaveButton'
 import { AppDialog } from 'src/components/ui/dialogs/AppDialog'
@@ -30,7 +29,7 @@ type IProps = {
 
 export const EditAddress: FC<IProps> = ({ address, onClose, open }) => {
   const queryClient = useQueryClient()
-  const { mutateAsync, isLoading, data, error } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: authApi.editAddress,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] })
@@ -44,7 +43,7 @@ export const EditAddress: FC<IProps> = ({ address, onClose, open }) => {
   })
   const { handleSubmit } = methods
   const onSubmit = (data: IAddress) => {
-    mutateAsync(data)
+    mutate(data)
   }
   return (
     <AppDialog onClose={onClose} open={open} title="Изменения адреса">

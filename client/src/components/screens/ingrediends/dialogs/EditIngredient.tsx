@@ -1,12 +1,8 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import { authApi } from 'src/api/services/auth/authService'
-import { certificateApi } from 'src/api/services/certificate/certificateService'
-import { CreateCertDto } from 'src/api/services/certificate/dto'
 import { EditProductDto } from 'src/api/services/product/dto'
 import { productApi } from 'src/api/services/product/productService'
 import { IProduct } from 'src/api/services/product/response'
@@ -14,7 +10,6 @@ import { CloseButton } from 'src/components/ui/buttons/CloseButton'
 import { SaveButton } from 'src/components/ui/buttons/SaveButton'
 import { AppDialog } from 'src/components/ui/dialogs/AppDialog'
 import { Input } from 'src/components/ui/form/Input'
-import { useAuthStore } from 'src/store/profile/authStore'
 import { FormFields, getSchema } from 'src/utils/config/forms'
 import { DialogProps } from 'src/utils/types/types'
 
@@ -32,9 +27,8 @@ type IProps = {
 } & DialogProps
 
 export const EditIngredient: FC<IProps> = ({ onClose, open, id, product }) => {
-  const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const { mutateAsync, isLoading, data, error } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: productApi.edit,
     onSuccess: () => {
       queryClient.invalidateQueries(["ingredients"])
@@ -48,7 +42,7 @@ export const EditIngredient: FC<IProps> = ({ onClose, open, id, product }) => {
   })
   const { handleSubmit } = methods
   const onSubmit = (data: EditProduct) => {
-    mutateAsync({id, ...data})
+    mutate({id, ...data})
   }
   return (
     <AppDialog onClose={onClose} open={open} title="Измените ингредиент" maxWidth="xs" fullWidth>

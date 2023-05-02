@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { IUserLoginResponse, IUserOauthMessage } from "src/api/services/auth/response"
+import { IUserOauthMessage } from "src/api/services/auth/response"
 import { IForm } from "src/components/screens/signup/SignupFields"
 import { useAuthStore } from "src/store/profile/authStore"
 import { getBaseUrl } from "src/utils/config/config"
@@ -14,9 +14,7 @@ export const useSocialButtons = () => {
   const setUser = useAuthStore(state => state.setUser)
   const onMessage = useCallback(async (e: MessageEvent<{user: IUserOauthMessage, type: string}>) => {
     if (e?.data?.type === "oauth2") {
-      console.log(e.data)
       if (!e.data.user.finded) {
-        console.log(e.data.user)
         setDefaultForm({ ...e.data.user.user } || {})
         setOpenDialog(true)
       } else {
@@ -26,6 +24,7 @@ export const useSocialButtons = () => {
         navigate(RouterPaths.Profile)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   useEffect(() => {
     window.addEventListener("message", onMessage)
@@ -35,8 +34,7 @@ export const useSocialButtons = () => {
   }, [onMessage])
   const onClickSocial = (path: string) => () => {
     try {
-      console.log("path: ", `${getBaseUrl()}/auth/${path}`)
-      const popupWindow = window.open(`${getBaseUrl()}/auth/${path}`, path, 'height=600,width=450,menubar=no,toolbar=no,resizable=yes,scrollbars=yes')
+      window.open(`${getBaseUrl()}/auth/${path}`, path, 'height=600,width=450,menubar=no,toolbar=no,resizable=yes,scrollbars=yes')
     } catch (e) {
       console.log("error")
     }

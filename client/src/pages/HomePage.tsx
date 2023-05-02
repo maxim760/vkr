@@ -6,7 +6,7 @@ import {
   SpeedDialAction,
 } from '@mui/material'
 import { useQuery } from '@tanstack/react-query'
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { authApi } from 'src/api/services/auth/authService'
 import { Layout } from 'src/components/ui/Layout/layout/Layout'
 import { PropertiesCard } from 'src/components/ui/PropertiesCard/PropertiesCard'
@@ -14,20 +14,18 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import CloseIcon from '@mui/icons-material/Close'
 import EditIcon from '@mui/icons-material/Edit'
-import AddIcon from '@mui/icons-material/AddCircle'
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet'
 import { useDialog } from 'src/utils/hooks/common/useDialog'
 import { EditAddress } from 'src/components/screens/home/dialogs/EditAddress'
 import { EditContact } from 'src/components/screens/home/dialogs/EditContact'
 import { EditBalance } from 'src/components/screens/home/dialogs/EditBalance'
 import { ConfirmDelete } from 'src/components/screens/home/dialogs/ConfirmDelete'
-import { CurrencyFormatter, DateTimeFormatter } from 'src/utils/config/formatters'
+import { DateTimeFormatter, PhoneFormatter } from 'src/utils/config/formatters'
 import { Loader } from 'src/components/ui/statuses/Loader'
 import { ErrorMessage } from 'src/components/ui/statuses/ErrorMessage'
 import { hasOnlyData } from 'src/utils/config/config'
 import { BalanceChip } from 'src/components/ui/BalanceChip/BalanceChip'
 import { getPrintRole } from 'src/utils/functions/user'
-import { toast } from 'react-toastify'
 import { useAuthStore } from 'src/store/profile/authStore'
 interface IProps {}
 
@@ -38,7 +36,7 @@ enum HomeDialogs {
   Delete,
 }
 
-export const HomePage: React.FC<IProps> = ({ }) => {
+export const HomePage: React.FC<IProps> = () => {
   const setUser = useAuthStore(state => state.setUser)
   const { isLoading, data, error } = useQuery({
     queryFn: authApi.me,
@@ -60,7 +58,7 @@ export const HomePage: React.FC<IProps> = ({ }) => {
           { label: 'Имя', value: data.firstName },
           { label: 'Фамилия', value: data.lastName },
           { label: 'Почта', value: data.email },
-          { label: 'Телефон', value: data.phone },
+          { label: 'Телефон', value: PhoneFormatter.format(data.phone) },
         ],
       },
       {

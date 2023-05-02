@@ -1,24 +1,13 @@
 import { Grid, Typography } from '@mui/material'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import React from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
-import { authApi } from 'src/api/services/auth/authService'
-import { FindUsersDto } from 'src/api/services/auth/dto'
 import { Layout } from 'src/components/ui/Layout/layout/Layout'
 import { PropertiesCard } from 'src/components/ui/PropertiesCard/PropertiesCard'
 import { ErrorMessage } from 'src/components/ui/statuses/ErrorMessage'
 import { Loader } from 'src/components/ui/statuses/Loader'
-import { TooltipButton } from 'src/components/ui/TooltipButton/TooltipButton'
 import { hasOnlyData } from 'src/utils/config/config'
-import { FormFields, getSchema } from 'src/utils/config/forms'
-import SearchIcon from '@mui/icons-material/Search';
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Input } from 'src/components/ui/form/Input'
 import { AppButton } from 'src/components/ui/buttons/AppButton'
 import { useDialog } from 'src/utils/hooks/common/useDialog'
-import { GiftCertificate } from 'src/components/screens/certificate/dialogs/GiftCertificate'
-import { useNavigate } from 'react-router-dom'
-import { BalanceChip } from 'src/components/ui/BalanceChip/BalanceChip'
 import { productApi } from 'src/api/services/product/productService'
 import { Actions } from 'src/components/ui/Actions/Actions'
 import { CreateIngredient } from 'src/components/screens/ingrediends/dialogs/CreateIngredient'
@@ -40,10 +29,8 @@ type IDialog = {
   product?: IProduct
 }
 
-export const IngredientsPage: React.FC<IProps> = ({ }) => {
+export const IngredientsPage: React.FC<IProps> = () => {
   const {dialog, onClose, onOpen} = useDialog<IDialog>()
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
   const { isLoading, data, error } = useQuery({
     queryFn: productApi.get,
     queryKey: ["ingredients"],

@@ -1,11 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Box, Grid, Typography } from '@mui/material'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { Box, Grid } from '@mui/material'
+import { useMutation } from '@tanstack/react-query'
 import { FC } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { authApi } from 'src/api/services/auth/authService'
 import { certificateApi } from 'src/api/services/certificate/certificateService'
 import { CreateCertDto } from 'src/api/services/certificate/dto'
 import { CloseButton } from 'src/components/ui/buttons/CloseButton'
@@ -29,10 +28,9 @@ type IProps = {
 } & DialogProps
 
 export const GiftCertificate: FC<IProps> = ({ onClose, open, toId }) => {
-  const queryClient = useQueryClient()
   const user = useAuthStore(state => state.user)
   const navigate = useNavigate()
-  const { mutateAsync, isLoading, data, error } = useMutation({
+  const { mutate, isLoading } = useMutation({
     mutationFn: certificateApi.add,
     onSuccess: () => {
       navigate(RouterPaths.Certificates)
@@ -50,7 +48,7 @@ export const GiftCertificate: FC<IProps> = ({ onClose, open, toId }) => {
       toast.error("Нет id пользователя")
       return
     }
-    mutateAsync({fromUser: user?.id, price: data.price, toUser: toId})
+    mutate({ fromUser: user?.id, price: data.price, toUser: toId })
   }
   return (
     <AppDialog onClose={onClose} open={open} title="Подарите сертификат" maxWidth="xs" fullWidth>

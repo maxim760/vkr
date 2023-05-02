@@ -33,7 +33,7 @@ type IDialog = {
   item?: IGoodsResponse
 }
 
-export const GoodsPage: React.FC<IProps> = ({ }) => {
+export const GoodsPage: React.FC<IProps> = () => {
   const { dialog, onClose, onOpen } = useDialog<IDialog>()
   const {methods, queryData, invalidateQuery} = useMenuSearch()
   const {isLoading, data, error, isRefetching, refetch} = queryData

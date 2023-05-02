@@ -14,8 +14,11 @@ const applyLocalStrategy = (passport: PassportStatic) => {
     "local",
     new LocalStrategy({ usernameField: "email", passwordField: "password" },
       async (email, password, done) => {
+        console.log("local strategy")
         const user = await userRepo.findOne({ where: { email }, relations: {roles: true} })
+        console.log("local strategy after find")
         if (!user) {
+          console.log("not user")
           return done(null, false, { message: 'Пользователь с таким email не найден.' })
         }
         const equalsPassword = await bcrypt.compare(password, user?.password || "")

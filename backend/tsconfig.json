@@ -12,9 +12,7 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false
   },
-  // "exclude": ["node_modules"],
   "ts-node": {
     "files": true
-  },
-  // "include": ["environment.d.ts", "**/*.ts"],
+  }
 }

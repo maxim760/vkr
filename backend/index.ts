@@ -79,7 +79,7 @@ const ErrorHandler = (err: unknown, req: Request, res: Response, next: NextFunct
 
 
 const rootRouter = Router()
-
+app.get("/", (req, res) => res.json({message: "success"}))
 rootRouter.use("/auth", authRouter)
 rootRouter.use("/order", orderRouter)
 rootRouter.use("/certificate", certificateRouter)

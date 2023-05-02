@@ -23,8 +23,8 @@ declare namespace NodeJS {
 }
 
 declare module 'passport-slack' {
-  export const Strategy = any;
+  export const Strategy: any;
 }
 declare module 'passport-slack-oauth2' {
-  export const Strategy = any;
+  export const Strategy: any;
 }

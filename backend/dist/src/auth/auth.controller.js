@@ -31,6 +31,7 @@ const typeorm_1 = require("typeorm");
 const address_repo_1 = require("../address/address.repo");
 const passport_1 = __importDefault(require("passport"));
 const tokens_1 = require("../core/utils/tokens");
+const cookie_1 = __importDefault(require("cookie"));
 class AuthController {
     registration(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -120,7 +121,12 @@ class AuthController {
                 user.refreshToken = newTokens.refreshToken;
                 yield user_repo_1.userRepo.save(user);
                 console.log("set new cookie", newTokens.refreshToken);
-                res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "lax" });
+                res.setHeader("Set-Cookie", cookie_1.default.serialize("refreshToken", newTokens.refreshToken, {
+                    httpOnly: true,
+                    sameSite: 'lax',
+                    maxAge: 30 * 24 * 60 * 60 * 1000,
+                    path: '/'
+                }));
                 return res.json({ user: user.toJSON() });
             }
             catch (e) {
@@ -142,7 +148,12 @@ class AuthController {
                     user.refreshToken = newTokens.refreshToken;
                     yield user_repo_1.userRepo.save(user);
                     console.log("set new cookie login", newTokens.refreshToken);
-                    res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "lax" });
+                    res.setHeader("Set-Cookie", cookie_1.default.serialize("refreshToken", newTokens.refreshToken, {
+                        httpOnly: true,
+                        sameSite: 'lax',
+                        maxAge: 30 * 24 * 60 * 60 * 1000,
+                        path: '/'
+                    }));
                     return res.json({ user: user.toJSON(), accessToken: newTokens.accessToken });
                 }))(req, res, next);
             }
@@ -189,7 +200,12 @@ class AuthController {
                 if ((_a = req.user) === null || _a === void 0 ? void 0 : _a.tokens) {
                     console.log("set cookies");
                     console.log("set new cookie", req.user.tokens.refreshToken);
-                    res.cookie('refreshToken', req.user.tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "lax" });
+                    res.setHeader("Set-Cookie", cookie_1.default.serialize("refreshToken", req.user.tokens.refreshToken, {
+                        httpOnly: true,
+                        sameSite: 'lax',
+                        maxAge: 30 * 24 * 60 * 60 * 1000,
+                        path: '/'
+                    }));
                 }
                 res.send(`
         <script>

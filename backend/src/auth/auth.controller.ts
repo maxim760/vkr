@@ -15,6 +15,7 @@ import { UpdateUserCashDto } from "./dto/update-user-cash.dto";
 import { UpdateUserContantDto } from "./dto/update-user-contact.dto";
 import { UpdateUserAddressDto } from "./dto/update-user-address.dto";
 import { FindUsersDto } from "./dto/find-users-dto";
+import cookie from "cookie"
 
 class AuthController {
   async registration(req: TypedRequestBody<CreateUserDto>, res: Response) {
@@ -104,7 +105,12 @@ class AuthController {
       user.refreshToken = newTokens.refreshToken
       await userRepo.save(user)
       console.log("set new cookie", newTokens.refreshToken)
-      res.cookie('refreshToken', newTokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "lax"})
+      res.setHeader("Set-Cookie", cookie.serialize("refreshToken", newTokens.refreshToken, {
+        httpOnly: true,
+        sameSite: 'lax',
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        path: '/'
+      }))
       return res.json({ user: user.toJSON() });
     } catch (e) {
       return res.status(500).json({ message: 'Не удалось создать пользователя.' })
@@ -124,7 +130,12 @@ class AuthController {
         user.refreshToken = newTokens.refreshToken
         await userRepo.save(user)
         console.log("set new cookie login", newTokens.refreshToken)
-        res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "lax" })
+        res.setHeader("Set-Cookie", cookie.serialize("refreshToken", newTokens.refreshToken, {
+          httpOnly: true,
+          sameSite: 'lax',
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          path: '/'
+        }))
         return res.json({ user: user.toJSON(), accessToken: newTokens.accessToken });
       })(req, res, next);
     } catch (e) {
@@ -162,7 +173,12 @@ class AuthController {
       if ((req.user as any)?.tokens) {
         console.log("set cookies")
         console.log("set new cookie", (req.user as any).tokens.refreshToken)
-        res.cookie('refreshToken', (req.user as any).tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: "lax"})
+        res.setHeader("Set-Cookie", cookie.serialize("refreshToken", (req.user as any).tokens.refreshToken, {
+          httpOnly: true,
+          sameSite: 'lax',
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          path: '/'
+        }))
       }
       
       res.send(`

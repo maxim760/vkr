@@ -43,7 +43,9 @@ export const HomePage: React.FC<IProps> = ({ }) => {
   const { isLoading, data, error } = useQuery({
     queryFn: authApi.me,
     queryKey: ['me'],
-    onSuccess: (res) => setUser(res)
+    onSuccess: (res) => setUser(res),
+    cacheTime: 0,
+    staleTime: 0
   })
   const { dialog, onClose, onOpen } = useDialog<HomeDialogs>()
   const userCardData = useMemo(() => {

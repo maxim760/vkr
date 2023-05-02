@@ -18,10 +18,13 @@ const tokens_1 = require("../utils/tokens");
 const user_repo_1 = require("../../user/user.repo");
 dotenv_1.default.config();
 const cookieExtractor = (req) => {
+    console.log("cookie extractor");
     let token = null;
+    console.log("token: ", token, "!");
     if (req && req.cookies) {
         token = req.cookies['refreshToken'];
     }
+    console.log("token: ", token, "!");
     return token;
 };
 const jwtRefreshOptions = {

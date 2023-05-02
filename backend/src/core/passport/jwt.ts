@@ -9,10 +9,13 @@ import { userRepo } from "../../user/user.repo";
 dotenv.config()
 
 const cookieExtractor = (req: Request) => {
+  console.log("cookie extractor")
   let token = null;
+  console.log("token: ", token , "!")
   if (req && req.cookies) {
     token = req.cookies['refreshToken'];
   }
+  console.log("token: ", token , "!")
   return token;
 };
 

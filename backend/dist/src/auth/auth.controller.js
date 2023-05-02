@@ -184,6 +184,7 @@ class AuthController {
             try {
                 console.log("oauth starts");
                 if ((_a = req.user) === null || _a === void 0 ? void 0 : _a.tokens) {
+                    console.log("set cookies");
                     res.cookie('refreshToken', req.user.tokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
                 }
                 res.send(`

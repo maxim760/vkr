@@ -250,9 +250,11 @@ class AuthController {
       if (!user) {
         return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
       }
-      userRepo.delete([id])
-      res.json({data: 1})
+      console.log({id})
+      await userRepo.delete({id})
+      res.json({ data: 1 })
     } catch (error) {
+      console.log(error)
       next(error)
     }
   }

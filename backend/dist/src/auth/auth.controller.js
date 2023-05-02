@@ -296,10 +296,12 @@ class AuthController {
                 if (!user) {
                     return res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
                 }
-                user_repo_1.userRepo.delete([id]);
+                console.log({ id });
+                yield user_repo_1.userRepo.delete({ id });
                 res.json({ data: 1 });
             }
             catch (error) {
+                console.log(error);
                 next(error);
             }
         });

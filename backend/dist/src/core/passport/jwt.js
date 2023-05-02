@@ -35,6 +35,7 @@ const jwtAccessOptions = {
 const applyJwtStrategy = (passport) => {
     passport.use("jwt-refresh", new passport_jwt_1.Strategy(jwtRefreshOptions, (payload, done) => __awaiter(void 0, void 0, void 0, function* () {
         const { id, email } = payload;
+        console.log("jwt refresh", id, email);
         const user = yield user_repo_1.userRepo.findOne({ where: { id }, relations: { roles: true } });
         const refreshToken = user === null || user === void 0 ? void 0 : user.refreshToken;
         if (refreshToken) {
@@ -55,6 +56,7 @@ const applyJwtStrategy = (passport) => {
         }
     })));
     passport.use("jwt", new passport_jwt_1.Strategy(jwtAccessOptions, (payload, done) => {
+        console.log("jwt", payload);
         done(null, payload);
     }));
 };

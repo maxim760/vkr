@@ -149,7 +149,10 @@ class AuthController {
 
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
-      res.clearCookie("refreshToken");
+      res.clearCookie("refreshToken", {
+        sameSite: 'none',
+        secure: true,
+      });
       const user = await userRepo.findOneBy({ id: req.user?.id || "" })
       if (user) {
         user.refreshToken = ""
@@ -269,7 +272,10 @@ class AuthController {
 
   async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
-      res.clearCookie("refreshToken");
+      res.clearCookie("refreshToken", {
+        sameSite: 'none',
+        secure: true,
+      });
       const id = req.user?.id
       const user = await userRepo.findOne({ where: { id }})
       if (!user) {

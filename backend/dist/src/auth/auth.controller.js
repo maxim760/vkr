@@ -169,7 +169,10 @@ class AuthController {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                res.clearCookie("refreshToken");
+                res.clearCookie("refreshToken", {
+                    sameSite: 'none',
+                    secure: true,
+                });
                 const user = yield user_repo_1.userRepo.findOneBy({ id: ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) || "" });
                 if (user) {
                     user.refreshToken = "";
@@ -315,7 +318,10 @@ class AuthController {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                res.clearCookie("refreshToken");
+                res.clearCookie("refreshToken", {
+                    sameSite: 'none',
+                    secure: true,
+                });
                 const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
                 const user = yield user_repo_1.userRepo.findOne({ where: { id } });
                 if (!user) {

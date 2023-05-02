@@ -35,10 +35,10 @@ export class PhoneFormatter {
       return str
     }
     const match = str.match(/^(\d{3})(\d{3})(\d{2})(\d{2})$/);
-    if (!match?.length) {
+    if (!match?.length || match.length <= 1) {
       return str
     }
-    let phone = `(${match[0]}) ${match[1]}-${match[2]}-${match[3]}`
+    let phone = `(${match[1]}) ${match[2]}-${match[3]}-${match[4]}`
     if (locale === "ru") {
       phone = "+7" + phone
     }

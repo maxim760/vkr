@@ -103,6 +103,7 @@ class AuthController {
       const newTokens = TokenService.generateTokens(payload)
       user.refreshToken = newTokens.refreshToken
       await userRepo.save(user)
+      console.log("set new cookie", newTokens.refreshToken)
       res.cookie('refreshToken', newTokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
       return res.json({ user: user.toJSON() });
     } catch (e) {
@@ -122,6 +123,7 @@ class AuthController {
         const newTokens = TokenService.generateTokens(payload)
         user.refreshToken = newTokens.refreshToken
         await userRepo.save(user)
+        console.log("set new cookie login", newTokens.refreshToken)
         res.cookie('refreshToken', newTokens.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
         return res.json({ user: user.toJSON(), accessToken: newTokens.accessToken });
       })(req, res, next);
@@ -134,6 +136,7 @@ class AuthController {
 
   async logout(req: Request, res: Response, next: NextFunction) {
     try {
+      res.clearCookie("refreshToken");
       const user = await userRepo.findOneBy({ id: req.user?.id || "" })
       if (user) {
         user.refreshToken = ""
@@ -155,15 +158,16 @@ class AuthController {
 
   async oauthCallback(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("oauth starts")
+      console.log("oauth starts", req.user)
       if ((req.user as any)?.tokens) {
         console.log("set cookies")
+        console.log("set new cookie", (req.user as any).tokens.refreshToken)
         res.cookie('refreshToken', (req.user as any).tokens.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
       }
       
       res.send(`
         <script>
-          window.opener.postMessage(${JSON.stringify({ user: {...req.user, accessToken: req.user?.tokens?.accessToken || "" }, type: "oauth2" })}, '*');
+          window.opener.postMessage(${JSON.stringify({ user: {...req.user, accessToken: req.user?.tokens?.accessToken || "", tokens: null }, type: "oauth2" })}, '*');
           window.close();
         </script>
       `);
@@ -246,6 +250,7 @@ class AuthController {
 
   async deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
+      res.clearCookie("refreshToken");
       const id = req.user?.id
       const user = await userRepo.findOne({ where: { id }})
       if (!user) {

@@ -1,18 +1,18 @@
 import express, { Router, Request, Response, NextFunction, ErrorRequestHandler } from 'express';
-import passport from "passport";
-import dotenv from "dotenv"
-import session from 'express-session';
-import cors from "cors"
-import cookieParser from "cookie-parser"
-import { applyStrategies } from './src/core/passport';
-import { AppDataSource } from './src/core/connection/data-source';
-import { authRouter } from './src/auth/auth.router';
-import { orderRouter } from './src/order/order.router';
-import { certificateRouter } from './src/certificate/certificate.router';
-import { goodsRouter } from './src/goods/goods.router';
-import { curierRouter } from './src/curier/curier.router';
-import { productRouter } from './src/product/product.router';
-process.env.TZ = "UTC"
+// import passport from "passport";
+// import dotenv from "dotenv"
+// import session from 'express-session';
+// import cors from "cors"
+// import cookieParser from "cookie-parser"
+// import { applyStrategies } from './src/core/passport';
+// import { AppDataSource } from './src/core/connection/data-source';
+// import { authRouter } from './src/auth/auth.router';
+// import { orderRouter } from './src/order/order.router';
+// import { certificateRouter } from './src/certificate/certificate.router';
+// import { goodsRouter } from './src/goods/goods.router';
+// import { curierRouter } from './src/curier/curier.router';
+// import { productRouter } from './src/product/product.router';
+// process.env.TZ = "UTC"
 // AppDataSource
 //   .initialize()
 //   .then(async (connection) => {
@@ -53,19 +53,19 @@ process.env.TZ = "UTC"
 //   })
 
 // applyStrategies(passport)
-dotenv.config()
+// dotenv.config()
 const app = express();
-app.use(cors({origin: true, credentials: true, }))
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-}));
+// app.use(cors({origin: true, credentials: true, }))
+// app.use(session({
+//   secret: process.env.SESSION_SECRET,
+//   resave: false,
+//   saveUninitialized: false,
+// }));
 // app.use(passport.initialize());
 // app.use(passport.session());
 
-app.use(express.json())
-app.use(cookieParser())
+// app.use(express.json())
+// app.use(cookieParser())
 
 // const ErrorHandler = (err: unknown, req: Request, res: Response, next: NextFunction) => {
 //   console.log("Middleware Error Hadnling");

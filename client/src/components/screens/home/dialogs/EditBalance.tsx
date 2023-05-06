@@ -10,6 +10,7 @@ import { SaveButton } from 'src/components/ui/buttons/SaveButton'
 import { AppDialog } from 'src/components/ui/dialogs/AppDialog'
 import { Input } from 'src/components/ui/form/Input'
 import { FormFields, getSchema } from 'src/utils/config/forms'
+import { QueryKeys } from 'src/utils/config/query/constants'
 import { DialogProps } from 'src/utils/types/types'
 
 const getValidationSchema = () =>
@@ -26,6 +27,7 @@ export const EditBalance: FC<IProps> = ({ onClose, open }) => {
     mutationFn: authApi.editBalance,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['me'] })
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.Balance] })
       onClose()
     },
   })

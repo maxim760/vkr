@@ -216,14 +216,15 @@ class AuthController {
   }
   async getBalance(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("get balance start")
       if (!req.user) {
         return res.status(401).json({message: "Нет доступа"})
       }
-      const user = await userRepo.findOne({ where: { email: req.user.email }, relations: { address: true, roles: true } })
+      const user = await userRepo.findOne({ where: { email: req.user.email }})
       if (!user) {
         return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
       }
-      res.json({balance: user.cash})
+      return res.json({balance: user.cash})
     } catch (error) {
       next(error)
     }

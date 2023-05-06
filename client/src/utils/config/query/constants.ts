@@ -1,4 +1,5 @@
 export const QueryKeys = {
   Goods: "goods",
-  HistoryOrders: "orders-history"
+  HistoryOrders: "orders-history",
+  Balance: "balance"
 }

@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Grid, Typography } from '@mui/material'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -15,6 +15,7 @@ import { selectBasket, selectBasketActions, selectBasketTotal, useBasketStore } 
 import { useAuthStore } from 'src/store/profile/authStore'
 import { CurrencyFormatter } from 'src/utils/config/formatters'
 import { FormFields, getSchema } from 'src/utils/config/forms'
+import { QueryKeys } from 'src/utils/config/query/constants'
 import { RouterPaths } from 'src/utils/config/router'
 import { DialogProps } from 'src/utils/types/types'
 import { BasketActions } from '../BasketActions'
@@ -32,6 +33,7 @@ type IProps = {
 } & DialogProps
 
 export const Basket: FC<IProps> = ({ onClose, open }) => {
+  const queryClient = useQueryClient()
   const navigate = useNavigate()
   const methods = useForm<IOrderSchema>({
     resolver: yupResolver(getValidationSchema()),
@@ -48,6 +50,7 @@ export const Basket: FC<IProps> = ({ onClose, open }) => {
     onSuccess: () => {
       onClose()
       navigate(RouterPaths.OrderHistory)
+      queryClient.invalidateQueries([QueryKeys.Balance])
       actions.clear()
     },
   })

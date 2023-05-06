@@ -5,7 +5,7 @@ import { IAddress, IAddressResponse } from "src/api/types/models/Address";
 import { IUser } from "src/api/types/models/User";
 import { AuthResponse } from "src/api/types/response/AuthResponse";
 import { EditUserBalanceDto, EditUserContactDto, FindUsersDto, LoginUserDto, RegisterUserDto } from "./dto";
-import { IUserLoginResponse, IUserRegisterResponse } from "./response";
+import { IBalanceRes, IUserLoginResponse, IUserRegisterResponse } from "./response";
 
 class AuthApi {
   static path(nextPath: string) {
@@ -25,6 +25,10 @@ class AuthApi {
   }
   async me() {
     const { data } = await api.get<IUser>(AuthApi.path("/me"))
+    return data
+  }
+  async getBalance() {
+    const { data } = await api.get<IBalanceRes>(AuthApi.path("/balance"))
     return data
   }
   async refresh() {

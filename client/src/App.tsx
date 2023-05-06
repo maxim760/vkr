@@ -1,4 +1,5 @@
 import { Box, CircularProgress } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { authApi } from './api/services/auth/authService';
@@ -7,6 +8,8 @@ import { router } from './utils/config/router';
 import { tokenService } from './utils/config/tokens';
 
 const App = () => {
+  const queryClient = useQueryClient()
+  const user = useAuthStore(state => state.user)
   const setUser = useAuthStore(state => state.setUser)
   const [loading, setLoading] = useState(true)
   useEffect(() => {
@@ -24,6 +27,11 @@ const App = () => {
     }
     load()
   }, [])
+  useEffect(() => {
+    if (!user) {
+      queryClient.invalidateQueries()
+    }
+  }, [user])
   if (loading) {
     return (
       <Box sx={{position: "fixed", left: 0, top: 0, width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center"}}>

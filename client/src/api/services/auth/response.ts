@@ -21,3 +21,7 @@ export type IUserOauthMessage = {
   finded: true,
   roles: RoleTypes[]
 }
+
+export type IBalanceRes = {
+  balance: number
+}

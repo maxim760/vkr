@@ -5,19 +5,34 @@ import {
   Chip,
   colors,
   darken,
+  Skeleton,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
 } from '@mui/material'
 import { CurrencyFormatter } from 'src/utils/config/formatters'
 import AddIcon from '@mui/icons-material/AddCircle'
+import { useQuery } from '@tanstack/react-query'
+import { QueryKeys } from 'src/utils/config/query/constants'
+import { authApi } from 'src/api/services/auth/authService'
+import { toast } from 'react-toastify'
+import { hasOnlyData } from 'src/utils/config/config'
 
 type IProps = {
   onClick?: () => void
 }
 
 export const BalanceChip: FC<IProps> = ({onClick}) => {
-  const balance = useAuthStore(state => state.user?.cash || 0)
+  const { data, isLoading, error } = useQuery({
+    queryKey: [QueryKeys.Balance],
+    queryFn: () => authApi.getBalance(),
+    onError: () => toast.error("Ошибка при получении баланса")
+  })
+  const label = isLoading
+    ? <Skeleton width="180px" />
+    : hasOnlyData(data, {isLoading, error})
+      ? `Баланс - ${CurrencyFormatter.format(data.balance)}`
+      : null
   return (
     <Chip
       component="div"
@@ -42,7 +57,7 @@ export const BalanceChip: FC<IProps> = ({onClick}) => {
         />
       ) : undefined}
       onDelete={onClick}
-      label={`Баланс - ${CurrencyFormatter.format(balance)}`}
+      label={label}
     />
   )
 }

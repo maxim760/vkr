@@ -64,20 +64,23 @@ class AuthController {
   }
   async registrationOauth2(req: TypedRequestBody<CreateUserDto>, res: Response) {
     try {
+      console.log("reg start")
       const { user: { password, ...userData }, address: addressBody } = req.body;
       const userWithEmail = await userRepo.findOneBy({ email: userData.email })
       if (userWithEmail) {
         return res.status(500).json({message: "Пользователь с таким email уже существует"})
       }
+      console.log("reg start 2")
       const user = userRepo.create(userData)
       user.cash = 0
-
+      
       const roles: Role[] = []
       let userRole = await roleRepo.findOneBy({ name: UserRole.User });
       if (!userRole) {
         userRole = roleRepo.create({ name: UserRole.User })
         await roleRepo.save(userRole)
       }
+      console.log(userRole)
       roles.push(userRole)
       if (userData.email.includes("@admin")) {
         let adminRole = await roleRepo.findOneBy({ name: UserRole.Admin });
@@ -97,6 +100,7 @@ class AuthController {
       }
 
       const address = addressRepo.create(addressBody)
+      console.log(address)
       await addressRepo.save(address)
       user.address = address
       await userRepo.save(user)
@@ -119,7 +123,6 @@ class AuthController {
   }
 
   async login(req: TypedRequestBody<LoginUserDto>, res: Response, next: NextFunction) {
-    console.log("try login")
     try {
       passport.authenticate('local', async (err, user: User, info) => {
         console.log()
@@ -207,6 +210,20 @@ class AuthController {
         return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
       }
       res.json(user.toJSON())
+    } catch (error) {
+      next(error)
+    }
+  }
+  async getBalance(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.user) {
+        return res.status(401).json({message: "Нет доступа"})
+      }
+      const user = await userRepo.findOne({ where: { email: req.user.email }, relations: { address: true, roles: true } })
+      if (!user) {
+        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
+      }
+      res.json({balance: user.cash})
     } catch (error) {
       next(error)
     }

@@ -1,6 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Grid } from '@mui/material'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { FC } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -13,6 +13,7 @@ import { AppDialog } from 'src/components/ui/dialogs/AppDialog'
 import { Input } from 'src/components/ui/form/Input'
 import { useAuthStore } from 'src/store/profile/authStore'
 import { FormFields, getSchema } from 'src/utils/config/forms'
+import { QueryKeys } from 'src/utils/config/query/constants'
 import { RouterPaths } from 'src/utils/config/router'
 import { DialogProps } from 'src/utils/types/types'
 
@@ -28,12 +29,14 @@ type IProps = {
 } & DialogProps
 
 export const GiftCertificate: FC<IProps> = ({ onClose, open, toId }) => {
+  const queryClient = useQueryClient()
   const user = useAuthStore(state => state.user)
   const navigate = useNavigate()
   const { mutate, isLoading } = useMutation({
     mutationFn: certificateApi.add,
     onSuccess: () => {
       navigate(RouterPaths.Certificates)
+      queryClient.invalidateQueries([QueryKeys.Balance])
       onClose()
     },
   })

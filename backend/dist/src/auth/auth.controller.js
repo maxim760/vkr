@@ -81,11 +81,13 @@ class AuthController {
     registrationOauth2(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("reg start");
                 const _a = req.body, _b = _a.user, { password } = _b, userData = __rest(_b, ["password"]), { address: addressBody } = _a;
                 const userWithEmail = yield user_repo_1.userRepo.findOneBy({ email: userData.email });
                 if (userWithEmail) {
                     return res.status(500).json({ message: "Пользователь с таким email уже существует" });
                 }
+                console.log("reg start 2");
                 const user = user_repo_1.userRepo.create(userData);
                 user.cash = 0;
                 const roles = [];
@@ -94,6 +96,7 @@ class AuthController {
                     userRole = role_repo_1.roleRepo.create({ name: types_1.UserRole.User });
                     yield role_repo_1.roleRepo.save(userRole);
                 }
+                console.log(userRole);
                 roles.push(userRole);
                 if (userData.email.includes("@admin")) {
                     let adminRole = yield role_repo_1.roleRepo.findOneBy({ name: types_1.UserRole.Admin });
@@ -113,6 +116,7 @@ class AuthController {
                     user.password = hashedPass;
                 }
                 const address = address_repo_1.addressRepo.create(addressBody);
+                console.log(address);
                 yield address_repo_1.addressRepo.save(address);
                 user.address = address;
                 yield user_repo_1.userRepo.save(user);
@@ -137,7 +141,6 @@ class AuthController {
     }
     login(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("try login");
             try {
                 passport_1.default.authenticate('local', (err, user, info) => __awaiter(this, void 0, void 0, function* () {
                     console.log();
@@ -236,6 +239,24 @@ class AuthController {
                     return res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
                 }
                 res.json(user.toJSON());
+            }
+            catch (error) {
+                next(error);
+            }
+        });
+    }
+    getBalance(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log("get balance start");
+                if (!req.user) {
+                    return res.status(401).json({ message: "Нет доступа" });
+                }
+                const user = yield user_repo_1.userRepo.findOne({ where: { email: req.user.email } });
+                if (!user) {
+                    return res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
+                }
+                return res.json({ balance: user.cash });
             }
             catch (error) {
                 next(error);

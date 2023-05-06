@@ -15,6 +15,7 @@ authRouter.post("/login", auth_controller_1.default.login);
 authRouter.post("/logout", auth_controller_1.default.logout);
 authRouter.get("/refresh", passport_1.default.authenticate('jwt-refresh', { session: false }), auth_controller_1.default.refresh);
 authRouter.get("/me", passport_1.default.authenticate('jwt', { session: false }), auth_controller_1.default.me);
+authRouter.get("/balance", passport_1.default.authenticate('jwt', { session: false }), auth_controller_1.default.getBalance);
 authRouter.get("/users", passport_1.default.authenticate('jwt', { session: false }), auth_controller_1.default.getAllUsers);
 authRouter.get("/yandex", passport_1.default.authenticate('yandex', { session: false }));
 authRouter.get("/yandex/callback", passport_1.default.authenticate("yandex", { display: "popup", session: false }), auth_controller_1.default.oauthCallback);

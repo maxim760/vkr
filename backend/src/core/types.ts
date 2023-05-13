@@ -1,7 +1,3 @@
-export enum CurierStatus {
-  Free = "free",
-  Busy = "busy"
-}
 export enum UserRole {
   User = "user",
   Admin = "admin"

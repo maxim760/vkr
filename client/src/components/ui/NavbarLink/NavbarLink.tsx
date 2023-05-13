@@ -5,13 +5,15 @@ import cx from "classnames"
 import { FCWithChildren } from 'src/utils/types/types'
 type IProps = {
   to: string,
-  classesInner?: boolean
+  classesInner?: boolean,
+  fullWidth?: boolean
 }
 
-export const NavbarLink: FCWithChildren<IProps> = ({to, children, classesInner}) => {
+export const NavbarLink: FCWithChildren<IProps> = ({to, children, classesInner, fullWidth}) => {
   
   return (
     <Box sx={{
+      width: fullWidth ? "100%" : "auto",
       "& .link": {
         borderRadius: 1,
         py: 0.5,

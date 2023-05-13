@@ -121,12 +121,12 @@ export const Header: FC<IProps> = () => {
             <List>
               {links.map((item) => (
                 <ListItem key={item.path} disablePadding>
-                  <NavbarLink to={item.path} classesInner>
+                  <NavbarLink to={item.path} classesInner fullWidth>
                     <ListItemText primary={item.title} className="link" />
                   </NavbarLink>
                 </ListItem>
               ))}
-              <ListItem onClick={onClickLogout} sx={{cursor: "pointer"}}>
+              <ListItem onClick={onClickLogout} sx={{cursor: "pointer", px: 1, py: 0.5}} disablePadding>
                 <ListItemText primary="Выйти" />
               </ListItem>
             </List>

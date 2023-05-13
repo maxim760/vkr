@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Order = void 0;
 const typeorm_1 = require("typeorm");
-const curier_entity_1 = require("../curier/curier.entity");
 const goods_entity_1 = require("../goods/goods.entity");
 const user_entity_1 = require("../user/user.entity");
 const order_goods_entity_1 = require("./order-goods.entity");
@@ -50,11 +49,6 @@ __decorate([
     (0, typeorm_1.Column)({ name: "done", default: false }),
     __metadata("design:type", Boolean)
 ], Order.prototype, "done", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => curier_entity_1.Curier, (curier) => curier.orders, { onDelete: "SET NULL", nullable: true }),
-    (0, typeorm_1.JoinColumn)({ name: "curier_id" }),
-    __metadata("design:type", curier_entity_1.Curier)
-], Order.prototype, "curier", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

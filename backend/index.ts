@@ -10,7 +10,6 @@ import { authRouter } from './src/auth/auth.router';
 import { orderRouter } from './src/order/order.router';
 import { certificateRouter } from './src/certificate/certificate.router';
 import { goodsRouter } from './src/goods/goods.router';
-import { curierRouter } from './src/curier/curier.router';
 import { productRouter } from './src/product/product.router';
 process.env.TZ = "UTC"
 AppDataSource
@@ -84,7 +83,6 @@ rootRouter.use("/auth", authRouter)
 rootRouter.use("/order", orderRouter)
 rootRouter.use("/certificate", certificateRouter)
 rootRouter.use("/goods", goodsRouter)
-rootRouter.use("/curier", curierRouter)
 rootRouter.use("/product", productRouter)
 app.use("/api", rootRouter)
 

@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, UpdateDateColumn, Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, OneToOne, JoinColumn, AfterRemove, ManyToOne, OneToMany } from "typeorm";
 import { Address } from "../address/address.entity";
-import { Curier } from "../curier/curier.entity";
 import { Goods } from "../goods/goods.entity";
 import { User } from "../user/user.entity";
 import { OrderGoods } from "./order-goods.entity";
@@ -31,10 +30,6 @@ export class Order {
   price: number;
   @Column({name: "done", default: false})
   done: boolean;
-
-  @ManyToOne(() => Curier, (curier) => curier.orders, {onDelete: "SET NULL", nullable: true})
-  @JoinColumn({name: "curier_id"})
-  curier: Curier
 
   @CreateDateColumn()
   created_at: Date;

@@ -47,7 +47,6 @@ const auth_router_1 = require("./src/auth/auth.router");
 const order_router_1 = require("./src/order/order.router");
 const certificate_router_1 = require("./src/certificate/certificate.router");
 const goods_router_1 = require("./src/goods/goods.router");
-const curier_router_1 = require("./src/curier/curier.router");
 const product_router_1 = require("./src/product/product.router");
 process.env.TZ = "UTC";
 data_source_1.AppDataSource
@@ -116,7 +115,6 @@ rootRouter.use("/auth", auth_router_1.authRouter);
 rootRouter.use("/order", order_router_1.orderRouter);
 rootRouter.use("/certificate", certificate_router_1.certificateRouter);
 rootRouter.use("/goods", goods_router_1.goodsRouter);
-rootRouter.use("/curier", curier_router_1.curierRouter);
 rootRouter.use("/product", product_router_1.productRouter);
 app.use("/api", rootRouter);
 app.use(ErrorHandler);

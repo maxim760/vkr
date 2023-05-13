@@ -163,7 +163,7 @@ class AuthController {
       }
       res.json({success: true})
     } catch (e) {
-      // next(e)
+      next(e)
     }
   }
   async refresh(req: Request, res: Response, next: NextFunction) {
@@ -301,7 +301,7 @@ class AuthController {
       }
       console.log({id})
       await userRepo.delete({id})
-      res.json({ data: 1 })
+      res.json({ data: true })
     } catch (error) {
       console.log(error)
       next(error)

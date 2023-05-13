@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CurierStatus, ITokens, IUserPayload, OmitCreateEntity, TypedRequestBody, TypedRequestParams, TypedRequestQuery, UserRole } from "../core/types";
+import { ITokens, IUserPayload, OmitCreateEntity, TypedRequestBody, TypedRequestParams, TypedRequestQuery, UserRole } from "../core/types";
 import { Role } from "../role/role.entity";
 import { roleRepo } from "../role/role.repo";
 import { User } from "../user/user.entity";

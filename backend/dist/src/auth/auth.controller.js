@@ -184,7 +184,7 @@ class AuthController {
                 res.json({ success: true });
             }
             catch (e) {
-                // next(e)
+                next(e);
             }
         });
     }
@@ -350,7 +350,7 @@ class AuthController {
                 }
                 console.log({ id });
                 yield user_repo_1.userRepo.delete({ id });
-                res.json({ data: 1 });
+                res.json({ data: true });
             }
             catch (error) {
                 console.log(error);

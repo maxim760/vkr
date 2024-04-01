@@ -22,8 +22,8 @@ dotenv_1.default.config();
 exports.AppDataSource = new typeorm_1.DataSource({
     type: process.env.DB_TYPE,
     url: process.env.DB_CONNECT_URL,
-    synchronize: true,
+    synchronize: false,
     logging: false,
-    entities: [__dirname + '/../../../**/*.entity.ts'],
+    entities: [__dirname + '/../../../**/*.entity.{js,ts}'],
     subscribers: [],
 });

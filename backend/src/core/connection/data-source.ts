@@ -18,7 +18,7 @@ dotenv.config()
 export const AppDataSource = new DataSource({
   type: process.env.DB_TYPE,
   url: process.env.DB_CONNECT_URL,
-  synchronize: true,
+  synchronize: false,
   logging: false,
   entities: [__dirname + '/../../../**/*.entity.ts'],
   subscribers: [],

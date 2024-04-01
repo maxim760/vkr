@@ -11,7 +11,7 @@ dotenv.config()
 const cookieExtractor = (req: Request) => {
   console.log("cookie extractor")
   let token = null;
-  console.log("token: ", token , "!")
+  console.log("token: ", token , "!", req.cookies)
   if (req && req.cookies) {
     token = req.cookies['refreshToken'];
   }
@@ -34,12 +34,12 @@ const applyJwtStrategy = (passport: PassportStatic) => {
   passport.use("jwt-refresh", new JWTStrategy(jwtRefreshOptions, async (payload: IUserPayload, done) => {
     const { id, email } = payload
     console.log("jwt refresh", id, email)
-    const user = await userRepo.findOne({ where: { id }, relations: { roles: true } })
+    const user = await userRepo.findOne({ where: { id } })
     const refreshToken = user?.refreshToken
     if (refreshToken) {
       // Проверяем валидность refresh-токена
       try {
-        const payload: IUserPayload = { id, email: user.email, roles: user.roles.map(item => item.name) };
+        const payload: IUserPayload = { id, email: user.email };
         const newTokens = TokenService.generateTokens(payload)
         user.refreshToken = newTokens.refreshToken
         await userRepo.save(user)

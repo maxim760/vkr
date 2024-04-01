@@ -18,10 +18,8 @@ const applyYandexStrategy = (passport: PassportStatic) => {
   async function (accessToken: any, refreshToken: any, params: any, profile: any, done: any) {
     const json = profile?._json || {}
     const user: Partial<User> = {
-      firstName: json?.first_name || "",
-      lastName: json?.last_name || "",
+      displayName: `${json?.first_name || ""} ${json?.last_name || ""}`.trim(),
       email: json?.default_email || "",
-      phone: json?.default_phone?.number || ""
     }
     const loginData = await authService.loginAfterOauth(user)
     return done(null, loginData);

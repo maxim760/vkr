@@ -16,8 +16,7 @@ const applyVkStrategy = (passport: PassportStatic) => {
   },
   async  function (accessToken: any, refreshToken: any, params: any, profile: any, done: any, ...all: any[]) {
     const user: Partial<User> = {
-      firstName: profile._json?.first_name || "",
-      lastName: profile._json?.last_name || "",
+      displayName: `${profile._json?.first_name || ""} ${profile._json?.last_name || ""}`.trim(),
       email: profile?.emails?.[0]?.value || "",
     }
     const loginData = await authService.loginAfterOauth(user)

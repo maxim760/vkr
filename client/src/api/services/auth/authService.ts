@@ -1,11 +1,10 @@
-import { AxiosRequestConfig } from "axios";
-import { api } from "src/api/host";
-import { DefaultSuccessResponse } from "src/api/types/common";
-import { IAddress, IAddressResponse } from "src/api/types/models/Address";
-import { IUser } from "src/api/types/models/User";
-import { AuthResponse } from "src/api/types/response/AuthResponse";
-import { EditUserBalanceDto, EditUserContactDto, FindUsersDto, LoginUserDto, RegisterUserDto } from "./dto";
-import { IBalanceRes, IUserLoginResponse, IUserRegisterResponse } from "./response";
+import type { AxiosRequestConfig } from "axios";
+import type { IUser } from "src/api/types/models/User";
+import { api } from "../../host";
+import type { DefaultSuccessResponse } from "../../types/common";
+import type { AuthResponse } from "../../types/response/AuthResponse";
+import type { LoginUserDto, RegisterUserDto } from "./dto";
+import type { IBalanceRes, IUserLoginResponse, IUserRegisterResponse } from "./response";
 
 class AuthApi {
   static path(nextPath: string) {
@@ -38,27 +37,10 @@ class AuthApi {
   async logout() {
     await api.post(AuthApi.path("/logout"))
   }
-  async editAddress(dto: IAddress) {
-    const { data } = await api.put<DefaultSuccessResponse>(AuthApi.path("/address"), dto)
+  async editContact(displayName: string) {
+    const { data } = await api.put<DefaultSuccessResponse>(AuthApi.path("/contact"), { displayName })
     return data
   }
-  async editContact(dto: EditUserContactDto) {
-    const { data } = await api.put<DefaultSuccessResponse>(AuthApi.path("/contact"), dto)
-    return data
-  }
-  async editBalance(dto: EditUserBalanceDto) {
-    const { data } = await api.put<DefaultSuccessResponse>(AuthApi.path("/cash"), dto)
-    return data
-  }
-  async deleteAccount() {
-    const { data } = await api.delete<DefaultSuccessResponse>(AuthApi.path(""))
-    return data
-  }
-  async getUsers(dto: FindUsersDto) {
-    const { data } = await api.get<Omit<IUser, "roles">[]>(AuthApi.path("/users"), { params: dto })
-    return data
-  }
-
 }
 
 export const authApi = new AuthApi()

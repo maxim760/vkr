@@ -7,14 +7,23 @@ exports.AppDataSource = void 0;
 const typeorm_1 = require("typeorm");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-// todo при хостинге уже надо иметь готовую базу со всеми таблицами
-// typeorm создвать не будет, так как synchronize false
-// для хостинга просто вытащить все таблицы, которые уже созданы
+// // todo при хостинге уже надо иметь готовую базу со всеми таблицами
+// // typeorm создвать не будет, так как synchronize false
+// // для хостинга просто вытащить все таблицы, которые уже созданы
+// export const AppDataSource = new DataSource({
+//   type: process.env.DB_TYPE,
+//   url: process.env.DB_CONNECT_URL,
+//   synchronize: false,
+//   logging: false,
+//   entities: [__dirname + '/../../../**/*.entity.js'],
+//   subscribers: [],
+// })
+// todo для дев режим synchronize - true
 exports.AppDataSource = new typeorm_1.DataSource({
     type: process.env.DB_TYPE,
     url: process.env.DB_CONNECT_URL,
-    synchronize: false,
+    synchronize: true,
     logging: false,
-    entities: [__dirname + '/../../../**/*.entity.js'],
+    entities: [__dirname + '/../../../**/*.entity.ts'],
     subscribers: [],
 });

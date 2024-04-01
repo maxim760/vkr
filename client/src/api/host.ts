@@ -1,7 +1,7 @@
 import axios from "axios"
 import { getBaseUrl } from "src/utils/config/config"
 import { tokenService } from "src/utils/config/tokens"
-import { AuthResponse } from "./types/response/AuthResponse"
+import type { AuthResponse } from "./types/response/AuthResponse"
 
 const api = axios.create({
   baseURL: getBaseUrl(),

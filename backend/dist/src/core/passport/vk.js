@@ -27,8 +27,7 @@ const applyVkStrategy = (passport) => {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
             const user = {
-                firstName: ((_a = profile._json) === null || _a === void 0 ? void 0 : _a.first_name) || "",
-                lastName: ((_b = profile._json) === null || _b === void 0 ? void 0 : _b.last_name) || "",
+                displayName: `${((_a = profile._json) === null || _a === void 0 ? void 0 : _a.first_name) || ""} ${((_b = profile._json) === null || _b === void 0 ? void 0 : _b.last_name) || ""}`.trim(),
                 email: ((_d = (_c = profile === null || profile === void 0 ? void 0 : profile.emails) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.value) || "",
             };
             const loginData = yield auth_service_1.default.loginAfterOauth(user);

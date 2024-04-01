@@ -29,7 +29,7 @@ const applySlackStrategy = (passport) => {
         return __awaiter(this, void 0, void 0, function* () {
             const userData = (profile === null || profile === void 0 ? void 0 : profile.user) || {};
             const user = {
-                firstName: (userData === null || userData === void 0 ? void 0 : userData.name) || "",
+                displayName: (userData === null || userData === void 0 ? void 0 : userData.name) || "",
                 email: (userData === null || userData === void 0 ? void 0 : userData.email) || "",
             };
             const loginData = yield auth_service_1.default.loginAfterOauth(user);

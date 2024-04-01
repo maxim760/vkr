@@ -1,58 +1,48 @@
 {
-  "name": "client",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
-    "@hookform/resolvers": "^2.9.11",
-    "@mui/icons-material": "^5.11.11",
-    "@mui/lab": "^5.0.0-alpha.121",
-    "@mui/material": "^5.11.9",
-    "@tanstack/react-query": "^4.24.10",
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
-    "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.13",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
-    "axios": "^1.3.3",
-    "classnames": "^2.3.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hook-form": "^7.43.1",
-    "react-number-format": "4.9.4",
-    "react-router-dom": "^6.8.1",
-    "react-scripts": "5.0.1",
-    "react-toastify": "^9.1.2",
-    "typescript": "^4.4.2",
-    "web-vitals": "^2.1.0",
-    "yup": "^1.0.0",
-    "zustand": "^4.3.3"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+	"name": "old",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --check .",
+		"format": "prettier --write ."
+	},
+	"devDependencies": {
+		"@fontsource/fira-mono": "^4.5.10",
+		"@neoconfetti/svelte": "^1.0.0",
+		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"autoprefixer": "^10.4.16",
+		"postcss": "^8.4.32",
+		"postcss-load-config": "^5.0.2",
+		"prettier": "^3.1.1",
+		"prettier-plugin-svelte": "^3.1.2",
+		"prettier-plugin-tailwindcss": "^0.5.9",
+		"svelte": "^4.2.7",
+		"svelte-check": "^3.6.0",
+		"tailwindcss": "^3.3.6",
+		"tslib": "^2.4.1",
+		"typescript": "^5.0.0",
+		"vite": "^5.1.4"
+	},
+	"type": "module",
+	"dependencies": {
+		"@tanstack/svelte-query": "^5.24.6",
+		"@themesberg/flowbite": "^1.3.0",
+		"@types/axios": "^0.14.0",
+		"@types/node": "^20.11.24",
+		"axios": "^1.6.7",
+		"flowbite": "^2.3.0",
+		"flowbite-svelte": "^0.44.24",
+		"flowbite-svelte-icons": "^1.4.1",
+		"postcss": "^8.4.35",
+		"svelte-easy-toast": "^1.1.0",
+		"svelte-persisted-store": "^0.9.1",
+		"svelte-toasts": "^1.1.2",
+		"tailwindcss": "^3.4.1"
+	}
 }

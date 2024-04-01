@@ -1,11 +1,6 @@
-export enum UserRole {
-  User = "user",
-  Admin = "admin"
-}
 export type IUserPayload = {
   id: string,
   email: string,
-  roles: UserRole[]
 }
 
 export type ITokens = {
@@ -33,3 +28,9 @@ export interface TypedRequestParams<T> extends Express.Request {
 }
 
 export type ControllerFn = (req: Express.Request, res: Express.Response) => void
+
+export type RecipeStep = {
+  time_step?: string;
+  name?: string;
+  photos?: string[];
+}

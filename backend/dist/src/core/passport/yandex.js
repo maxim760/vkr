@@ -26,14 +26,11 @@ const applyYandexStrategy = (passport) => {
         // @ts-ignore
         state: true,
     }, function (accessToken, refreshToken, params, profile, done) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const json = (profile === null || profile === void 0 ? void 0 : profile._json) || {};
             const user = {
-                firstName: (json === null || json === void 0 ? void 0 : json.first_name) || "",
-                lastName: (json === null || json === void 0 ? void 0 : json.last_name) || "",
+                displayName: `${(json === null || json === void 0 ? void 0 : json.first_name) || ""} ${(json === null || json === void 0 ? void 0 : json.last_name) || ""}`.trim(),
                 email: (json === null || json === void 0 ? void 0 : json.default_email) || "",
-                phone: ((_a = json === null || json === void 0 ? void 0 : json.default_phone) === null || _a === void 0 ? void 0 : _a.number) || ""
             };
             const loginData = yield auth_service_1.default.loginAfterOauth(user);
             return done(null, loginData);

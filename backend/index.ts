@@ -7,14 +7,14 @@ import cookieParser from "cookie-parser"
 import { applyStrategies } from './src/core/passport';
 import { AppDataSource } from './src/core/connection/data-source';
 import { authRouter } from './src/auth/auth.router';
-import { orderRouter } from './src/order/order.router';
-import { certificateRouter } from './src/certificate/certificate.router';
-import { goodsRouter } from './src/goods/goods.router';
-import { productRouter } from './src/product/product.router';
+import { folderRouter } from './src/folder/folder.router';
+import { spaceRouter } from './src/space/space.router';
+import { recipeRouter } from './src/recipe/recipe.router';
 process.env.TZ = "UTC"
 AppDataSource
   .initialize()
   .then(async (connection) => {
+    console.log("then")
     const queryRunner = connection.createQueryRunner();
     // await queryRunner.query(`
     //   CREATE TRIGGER IF NOT EXISTS order_goods_AFTER_INSERT
@@ -80,10 +80,9 @@ const ErrorHandler = (err: unknown, req: Request, res: Response, next: NextFunct
 const rootRouter = Router()
 app.get("/", (req, res) => res.json({message: "success"}))
 rootRouter.use("/auth", authRouter)
-rootRouter.use("/order", orderRouter)
-rootRouter.use("/certificate", certificateRouter)
-rootRouter.use("/goods", goodsRouter)
-rootRouter.use("/product", productRouter)
+rootRouter.use("/folder", folderRouter)
+rootRouter.use("/space", spaceRouter)
+rootRouter.use("/recipe", recipeRouter)
 app.use("/api", rootRouter)
 
 app.use(ErrorHandler)

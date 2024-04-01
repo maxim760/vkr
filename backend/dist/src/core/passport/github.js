@@ -30,7 +30,7 @@ const applyGithubStrategy = (passport) => {
         return __awaiter(this, void 0, void 0, function* () {
             // const json = profile?._json || {}
             const user = {
-                firstName: (profile === null || profile === void 0 ? void 0 : profile.displayName) || "",
+                displayName: (profile === null || profile === void 0 ? void 0 : profile.displayName) || "",
                 email: ((_a = profile.emails) === null || _a === void 0 ? void 0 : _a[0].value) || "",
             };
             const loginData = yield auth_service_1.default.loginAfterOauth(user);

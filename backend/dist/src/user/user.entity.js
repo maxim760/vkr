@@ -22,10 +22,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const typeorm_1 = require("typeorm");
-const address_entity_1 = require("../address/address.entity");
-const certificate_entity_1 = require("../certificate/certificate.entity");
-const order_entity_1 = require("../order/order.entity");
-const role_entity_1 = require("../role/role.entity");
+const user_space_entity_1 = require("./user-space.entity");
 let User = class User {
     toJSON() {
         const _a = this, { refreshToken, password } = _a, props = __rest(_a, ["refreshToken", "password"]);
@@ -37,13 +34,9 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: "first_name", default: "" }),
+    (0, typeorm_1.Column)({ name: "display_name", default: "" }),
     __metadata("design:type", String)
-], User.prototype, "firstName", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ name: "last_name", default: "" }),
-    __metadata("design:type", String)
-], User.prototype, "lastName", void 0);
+], User.prototype, "displayName", void 0);
 __decorate([
     (0, typeorm_1.Column)({ unique: true, nullable: false }),
     __metadata("design:type", String)
@@ -55,36 +48,11 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ default: "" }),
     __metadata("design:type", String)
-], User.prototype, "phone", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ default: 0 }),
-    __metadata("design:type", Number)
-], User.prototype, "cash", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ default: "" }),
-    __metadata("design:type", String)
 ], User.prototype, "refreshToken", void 0);
 __decorate([
-    (0, typeorm_1.ManyToMany)(() => role_entity_1.Role, {}),
-    (0, typeorm_1.JoinTable)(),
+    (0, typeorm_1.OneToMany)(() => user_space_entity_1.UserSpaces, userSpaces => userSpaces.user),
     __metadata("design:type", Array)
-], User.prototype, "roles", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => certificate_entity_1.Certificate, (certificate) => certificate.fromUser),
-    __metadata("design:type", Array)
-], User.prototype, "receivedCertificates", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => certificate_entity_1.Certificate, (certificate) => certificate.toUser),
-    __metadata("design:type", Array)
-], User.prototype, "donatedCertificates", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => order_entity_1.Order, (order) => order.user),
-    __metadata("design:type", Array)
-], User.prototype, "orders", void 0);
-__decorate([
-    (0, typeorm_1.OneToOne)(() => address_entity_1.Address, address => address.user),
-    __metadata("design:type", address_entity_1.Address)
-], User.prototype, "address", void 0);
+], User.prototype, "userSpaces", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

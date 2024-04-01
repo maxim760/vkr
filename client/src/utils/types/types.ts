@@ -1,7 +1,7 @@
-import React, { PropsWithChildren } from "react";
-
-export type FCWithChildren<T = unknown> = React.FC<PropsWithChildren<T>>
-
-export type DialogProps = { onClose: () => void, open: boolean }
-
-export type IComplete<TId = string, TLabel = string> = {id: TId, label: TLabel}
+export enum QueryKey {
+  FOLDERS = "FOLDERS",
+  ME = "ME",
+  SEARCH_RECIPE = "SEARCH_RECIPE",
+  RECIPE_BY_ID = "RECIPE_BY_ID",
+  SPACES = "SPACES",
+}

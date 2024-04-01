@@ -23,42 +23,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const types_1 = require("../core/types");
-const role_repo_1 = require("../role/role.repo");
 const user_repo_1 = require("../user/user.repo");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const typeorm_1 = require("typeorm");
-const address_repo_1 = require("../address/address.repo");
 const passport_1 = __importDefault(require("passport"));
 const tokens_1 = require("../core/utils/tokens");
 const cookie_1 = __importDefault(require("cookie"));
+const space_entity_1 = require("../space/space.entity");
+const auth_service_1 = __importDefault(require("./auth.service"));
+const space_repo_1 = require("../space/space.repo");
+const user_space_entity_1 = require("../user/user-space.entity");
 class AuthController {
     registration(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const _a = req.body, _b = _a.user, { password } = _b, userData = __rest(_b, ["password"]), { address: addressBody } = _a;
+                const _a = req.body.user, { password } = _a, userData = __rest(_a, ["password"]);
                 const userWithEmail = yield user_repo_1.userRepo.findOneBy({ email: userData.email });
                 if (userWithEmail) {
                     return res.status(500).json({ message: "Пользователь с таким email уже существует" });
                 }
                 const user = user_repo_1.userRepo.create(userData);
-                user.cash = 0;
-                const roles = [];
-                let userRole = yield role_repo_1.roleRepo.findOneBy({ name: types_1.UserRole.User });
-                if (!userRole) {
-                    userRole = role_repo_1.roleRepo.create({ name: types_1.UserRole.User });
-                    yield role_repo_1.roleRepo.save(userRole);
-                }
-                roles.push(userRole);
-                if (userData.email.includes("@admin")) {
-                    let adminRole = yield role_repo_1.roleRepo.findOneBy({ name: types_1.UserRole.Admin });
-                    if (!adminRole) {
-                        adminRole = role_repo_1.roleRepo.create({ name: types_1.UserRole.Admin });
-                        yield role_repo_1.roleRepo.save(adminRole);
-                    }
-                    roles.push(adminRole);
-                }
-                user.roles = roles;
                 if (!password) {
                     user.password = "";
                 }
@@ -67,10 +50,17 @@ class AuthController {
                     const hashedPass = yield bcrypt_1.default.hash(password, salt);
                     user.password = hashedPass;
                 }
-                const address = address_repo_1.addressRepo.create(addressBody);
-                yield address_repo_1.addressRepo.save(address);
-                user.address = address;
                 yield user_repo_1.userRepo.save(user);
+                const space = new space_entity_1.Space();
+                space.name = `${userData.displayName} Пространство`;
+                yield space_repo_1.spaceRepo.save(space);
+                const userSpace = new user_space_entity_1.UserSpaces();
+                userSpace.user = user;
+                userSpace.space = space;
+                userSpace.is_edit = true; // Пользователь по умолчанию имеет права на редактирование
+                userSpace.is_admin = true; // Пользователь по умолчанию является администратором
+                userSpace.is_selected = true; // Пространство становится основным для пользователя
+                yield user_repo_1.userSpacesRepo.save(userSpace);
                 return res.json({ user: { email: user.email } });
             }
             catch (e) {
@@ -82,31 +72,13 @@ class AuthController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 console.log("reg start");
-                const _a = req.body, _b = _a.user, { password } = _b, userData = __rest(_b, ["password"]), { address: addressBody } = _a;
+                const _a = req.body.user, { password } = _a, userData = __rest(_a, ["password"]);
                 const userWithEmail = yield user_repo_1.userRepo.findOneBy({ email: userData.email });
                 if (userWithEmail) {
                     return res.status(500).json({ message: "Пользователь с таким email уже существует" });
                 }
                 console.log("reg start 2");
                 const user = user_repo_1.userRepo.create(userData);
-                user.cash = 0;
-                const roles = [];
-                let userRole = yield role_repo_1.roleRepo.findOneBy({ name: types_1.UserRole.User });
-                if (!userRole) {
-                    userRole = role_repo_1.roleRepo.create({ name: types_1.UserRole.User });
-                    yield role_repo_1.roleRepo.save(userRole);
-                }
-                console.log(userRole);
-                roles.push(userRole);
-                if (userData.email.includes("@admin")) {
-                    let adminRole = yield role_repo_1.roleRepo.findOneBy({ name: types_1.UserRole.Admin });
-                    if (!adminRole) {
-                        adminRole = role_repo_1.roleRepo.create({ name: types_1.UserRole.Admin });
-                        yield role_repo_1.roleRepo.save(adminRole);
-                    }
-                    roles.push(adminRole);
-                }
-                user.roles = roles;
                 if (!password) {
                     user.password = "";
                 }
@@ -115,15 +87,21 @@ class AuthController {
                     const hashedPass = yield bcrypt_1.default.hash(password, salt);
                     user.password = hashedPass;
                 }
-                const address = address_repo_1.addressRepo.create(addressBody);
-                console.log(address);
-                yield address_repo_1.addressRepo.save(address);
-                user.address = address;
                 yield user_repo_1.userRepo.save(user);
-                const payload = { id: user.id, email: user.email, roles: user.roles.map(item => item.name) };
+                const payload = { id: user.id, email: user.email };
                 const newTokens = tokens_1.TokenService.generateTokens(payload);
                 user.refreshToken = newTokens.refreshToken;
                 yield user_repo_1.userRepo.save(user);
+                const space = new space_entity_1.Space();
+                space.name = `${userData.displayName} Пространство`;
+                yield space_repo_1.spaceRepo.save(space);
+                const userSpace = new user_space_entity_1.UserSpaces();
+                userSpace.user = user;
+                userSpace.space = space;
+                userSpace.is_edit = true; // Пользователь по умолчанию имеет права на редактирование
+                userSpace.is_admin = true; // Пользователь по умолчанию является администратором
+                userSpace.is_selected = true; // Пространство становится основным для пользователя
+                yield user_repo_1.userSpacesRepo.save(userSpace);
                 console.log("set new cookie", newTokens.refreshToken);
                 res.setHeader("Set-Cookie", cookie_1.default.serialize("refreshToken", newTokens.refreshToken, {
                     httpOnly: true,
@@ -147,7 +125,7 @@ class AuthController {
                     if (err || !user) {
                         return res.status(401).json({ message: 'Неправильные email или пароль.', login: true });
                     }
-                    const payload = { id: user.id, email: user.email, roles: user.roles.map(item => item.name) };
+                    const payload = { id: user.id, email: user.email };
                     const newTokens = tokens_1.TokenService.generateTokens(payload);
                     user.refreshToken = newTokens.refreshToken;
                     yield user_repo_1.userRepo.save(user);
@@ -169,14 +147,15 @@ class AuthController {
         });
     }
     logout(req, res, next) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 res.clearCookie("refreshToken", {
                     sameSite: 'none',
                     secure: true,
                 });
-                const user = yield user_repo_1.userRepo.findOneBy({ id: ((_a = req.user) === null || _a === void 0 ? void 0 : _a.id) || "" });
+                console.log((_a = req === null || req === void 0 ? void 0 : req.user) === null || _a === void 0 ? void 0 : _a.id);
+                const user = yield user_repo_1.userRepo.findOneBy({ id: ((_b = req.user) === null || _b === void 0 ? void 0 : _b.id) || "" });
                 if (user) {
                     user.refreshToken = "";
                     yield user_repo_1.userRepo.save(user);
@@ -204,7 +183,6 @@ class AuthController {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("oauth starts", req.user);
                 if ((_a = req.user) === null || _a === void 0 ? void 0 : _a.tokens) {
                     console.log("set cookies");
                     console.log("set new cookie", req.user.tokens.refreshToken);
@@ -234,7 +212,7 @@ class AuthController {
                 if (!req.user) {
                     return res.status(401).json({ data: null });
                 }
-                const user = yield user_repo_1.userRepo.findOne({ where: { email: req.user.email }, relations: { address: true, roles: true } });
+                const user = yield user_repo_1.userRepo.findOne({ where: { email: req.user.email }, relations: { userSpaces: { space: true } } });
                 if (!user) {
                     return res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
                 }
@@ -245,115 +223,25 @@ class AuthController {
             }
         });
     }
-    getBalance(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                console.log("get balance start");
-                if (!req.user) {
-                    return res.status(401).json({ message: "Нет доступа" });
-                }
-                const user = yield user_repo_1.userRepo.findOne({ where: { email: req.user.email } });
-                if (!user) {
-                    return res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
-                }
-                return res.json({ balance: user.cash });
-            }
-            catch (error) {
-                next(error);
-            }
-        });
-    }
-    updateUserCash(req, res, next) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-                const user = yield user_repo_1.userRepo.findOneBy({ id });
-                if (!user) {
-                    return res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
-                }
-                yield user_repo_1.userRepo.update({ id }, { cash: () => `cash + ${req.body.cash}` });
-                return res.json({ data: true });
-            }
-            catch (error) {
-                next(error);
-            }
-        });
-    }
     updateUserContact(req, res, next) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-                const user = yield user_repo_1.userRepo.findOneBy({ id });
-                if (!user) {
-                    res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
-                }
-                yield user_repo_1.userRepo.update({ id }, req.body);
-                return res.json({ data: true });
-            }
-            catch (error) {
-                next(error);
-            }
-        });
-    }
-    updateUserAddress(req, res, next) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-                const user = yield user_repo_1.userRepo.findOne({ where: { id }, relations: { address: true } });
-                if (!user) {
-                    return res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
-                }
-                const result = yield address_repo_1.addressRepo.update({ id: user.address.id }, Object.assign(Object.assign({}, user === null || user === void 0 ? void 0 : user.address), req.body));
-                return res.json({ data: true });
-            }
-            catch (error) {
-                next(error);
-            }
-        });
-    }
-    getAllUsers(req, res, next) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { query = "" } = req.query;
-                const users = yield user_repo_1.userRepo.find({
-                    where: [
-                        { firstName: (0, typeorm_1.ILike)(`%${query}%`) },
-                        { lastName: (0, typeorm_1.ILike)(`%${query}%`) },
-                        { phone: (0, typeorm_1.ILike)(`%${query}%`) },
-                    ]
-                });
-                if (!users) {
-                    return res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
-                }
-                return res.json(users.map(user => user.toJSON()));
-            }
-            catch (error) {
-                next(error);
-            }
-        });
-    }
-    deleteUser(req, res, next) {
-        var _a;
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                res.clearCookie("refreshToken", {
-                    sameSite: 'none',
-                    secure: true,
-                });
                 const id = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
                 const user = yield user_repo_1.userRepo.findOne({ where: { id } });
                 if (!user) {
-                    return res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
+                    res.status(404).json({ data: null, message: "Информация о пользователе не найдена" });
                 }
-                console.log({ id });
-                yield user_repo_1.userRepo.delete({ id });
-                res.json({ data: true });
+                const { activeSpace, canEdit, isAdmin } = yield auth_service_1.default.findSpaceIdByEmail((_b = req.user) === null || _b === void 0 ? void 0 : _b.email);
+                if (!activeSpace || !canEdit || !isAdmin) {
+                    return res.status(404).json({ data: null, message: "Активное пространство не найдено" });
+                }
+                yield user_repo_1.userRepo.update({ id }, req.body);
+                activeSpace.name = `${req.body.displayName} Пространство`;
+                yield space_repo_1.spaceRepo.save(activeSpace);
+                return res.json({ data: true });
             }
             catch (error) {
-                console.log(error);
                 next(error);
             }
         });

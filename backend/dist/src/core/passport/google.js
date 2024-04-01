@@ -25,11 +25,9 @@ const applyGoogleStrategy = (passport) => {
         state: true,
         scope: ["profile", "email"],
     }, function (accessToken, refreshToken, profile, done) {
-        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const user = {
-                firstName: ((_a = profile.name) === null || _a === void 0 ? void 0 : _a.givenName) || "",
-                lastName: ((_b = profile.name) === null || _b === void 0 ? void 0 : _b.familyName) || "",
+                displayName: profile.displayName,
                 email: profile._json.email || ""
             };
             const loginData = yield auth_service_1.default.loginAfterOauth(user);

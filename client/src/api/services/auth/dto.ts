@@ -1,15 +1,11 @@
-import { IAddress } from "src/api/types/models/Address";
-import { IUser } from "src/api/types/models/User";
+import type { IUser } from "../../types/models/User"
 
 export type RegisterUserDto = {
   user: {
-    firstName: string,
-    lastName: string,
     email: string,
-    phone: string,
-    password: string | null,
+    displayName: string,
+    password: string,
   },
-  address: IAddress
 }
 
 export type LoginUserDto = {
@@ -17,8 +13,6 @@ export type LoginUserDto = {
   password: string
 }
 
-export type EditUserContactDto = Pick<IUser, "firstName" | "lastName" | "phone">
-
-export type EditUserBalanceDto = Pick<IUser, "cash">
+export type EditUserContactDto = Pick<IUser, "displayName">
 
 export type FindUsersDto = {query: string}

@@ -18,7 +18,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const applyLocalStrategy = (passport) => {
     passport.use("local", new passport_local_1.Strategy({ usernameField: "email", passwordField: "password" }, (email, password, done) => __awaiter(void 0, void 0, void 0, function* () {
         console.log("local strategy");
-        const user = yield user_repo_1.userRepo.findOne({ where: { email }, relations: { roles: true } });
+        const user = yield user_repo_1.userRepo.findOne({ where: { email } });
         console.log("local strategy after find");
         if (!user) {
             console.log("not user");

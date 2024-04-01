@@ -18,7 +18,7 @@ const applySlackStrategy = (passport: PassportStatic) => {
   async function (accessToken: any, refreshToken: any, profile: any, done: any) {
     const userData = profile?.user || {}
     const user: Partial<User> = {
-      firstName: userData?.name || "",
+      displayName: userData?.name || "",
       email: userData?.email || "",
     }
     const loginData = await authService.loginAfterOauth(user)

@@ -25,7 +25,7 @@ export const applyStrategies = (passport: PassportStatic) => {
   passport.deserializeUser(function (id: string, done) {
     console.log("deserializez", id)
     try {
-      const user = userRepo.findOneOrFail({where: {id}, relations: {roles: true}})
+      const user = userRepo.findOneOrFail({where: {id}})
       done(null, user);
     } catch (e) {
       console.log(e)

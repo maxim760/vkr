@@ -19,7 +19,7 @@ const applyGithubStrategy = (passport: PassportStatic) => {
     
     // const json = profile?._json || {}
     const user: Partial<User> = {
-      firstName: profile?.displayName || "",
+      displayName: profile?.displayName || "",
       email: profile.emails?.[0].value || "",
     }
     const loginData = await authService.loginAfterOauth(user)

@@ -1,49 +1,31 @@
 import { NextFunction, Request, Response } from "express";
-import { ITokens, IUserPayload, TypedRequestBody, TypedRequestQuery, UserRole } from "../core/types";
-import { Role } from "../role/role.entity";
-import { roleRepo } from "../role/role.repo";
+import { ITokens, IUserPayload, TypedRequestBody, TypedRequestQuery } from "../core/types";
 import { User } from "../user/user.entity";
-import { userRepo } from "../user/user.repo";
+import { userRepo, userSpacesRepo } from "../user/user.repo";
 import { CreateUserDto } from "./dto/create-user.dto";
 import bcrypt from "bcrypt"
 import {Like, Raw, ILike} from "typeorm"
-import { addressRepo } from "../address/address.repo";
 import { LoginUserDto } from "./dto/login-user.dto";
 import passport from "passport";
 import { TokenService } from "../core/utils/tokens";
-import { UpdateUserCashDto } from "./dto/update-user-cash.dto";
 import { UpdateUserContantDto } from "./dto/update-user-contact.dto";
-import { UpdateUserAddressDto } from "./dto/update-user-address.dto";
 import { FindUsersDto } from "./dto/find-users-dto";
 import cookie from "cookie"
+import { Space } from "../space/space.entity";
+import authService from "./auth.service";
+import { spaceRepo } from "../space/space.repo";
+import { UserSpaces } from "../user/user-space.entity";
 
 class AuthController {
   async registration(req: TypedRequestBody<CreateUserDto>, res: Response) {
     try {
-      const { user: { password, ...userData }, address: addressBody } = req.body;
+      const { user: { password, ...userData } } = req.body;
       const userWithEmail = await userRepo.findOneBy({ email: userData.email })
       if (userWithEmail) {
         return res.status(500).json({message: "Пользователь с таким email уже существует"})
       }
       const user = userRepo.create(userData)
-      user.cash = 0
 
-      const roles: Role[] = []
-      let userRole = await roleRepo.findOneBy({ name: UserRole.User });
-      if (!userRole) {
-        userRole = roleRepo.create({ name: UserRole.User })
-        await roleRepo.save(userRole)
-      }
-      roles.push(userRole)
-      if (userData.email.includes("@admin")) {
-        let adminRole = await roleRepo.findOneBy({ name: UserRole.Admin });
-        if (!adminRole) {
-          adminRole = roleRepo.create({ name: UserRole.Admin })
-          await roleRepo.save(adminRole)
-        }
-        roles.push(adminRole)
-      }
-      user.roles = roles
       if (!password) {
         user.password = ""
       } else {
@@ -52,10 +34,19 @@ class AuthController {
         user.password = hashedPass
       }
 
-      const address = addressRepo.create(addressBody)
-      await addressRepo.save(address)
-      user.address = address
       await userRepo.save(user)
+
+      const space = new Space();
+      space.name = `${userData.displayName} Пространство`;
+      await spaceRepo.save(space);
+
+      const userSpace = new UserSpaces();
+      userSpace.user = user;
+      userSpace.space = space;
+      userSpace.is_edit = true; // Пользователь по умолчанию имеет права на редактирование
+      userSpace.is_admin = true; // Пользователь по умолчанию является администратором
+      userSpace.is_selected = true; // Пространство становится основным для пользователя
+      await userSpacesRepo.save(userSpace);
     
       return res.json({ user: {email: user.email} });
     } catch (e) {
@@ -65,32 +56,14 @@ class AuthController {
   async registrationOauth2(req: TypedRequestBody<CreateUserDto>, res: Response) {
     try {
       console.log("reg start")
-      const { user: { password, ...userData }, address: addressBody } = req.body;
+      const { user: { password, ...userData } } = req.body;
       const userWithEmail = await userRepo.findOneBy({ email: userData.email })
       if (userWithEmail) {
         return res.status(500).json({message: "Пользователь с таким email уже существует"})
       }
       console.log("reg start 2")
       const user = userRepo.create(userData)
-      user.cash = 0
       
-      const roles: Role[] = []
-      let userRole = await roleRepo.findOneBy({ name: UserRole.User });
-      if (!userRole) {
-        userRole = roleRepo.create({ name: UserRole.User })
-        await roleRepo.save(userRole)
-      }
-      console.log(userRole)
-      roles.push(userRole)
-      if (userData.email.includes("@admin")) {
-        let adminRole = await roleRepo.findOneBy({ name: UserRole.Admin });
-        if (!adminRole) {
-          adminRole = roleRepo.create({ name: UserRole.Admin })
-          await roleRepo.save(adminRole)
-        }
-        roles.push(adminRole)
-      }
-      user.roles = roles
       if (!password) {
         user.password = ""
       } else {
@@ -99,15 +72,25 @@ class AuthController {
         user.password = hashedPass
       }
 
-      const address = addressRepo.create(addressBody)
-      console.log(address)
-      await addressRepo.save(address)
-      user.address = address
       await userRepo.save(user)
-      const payload: IUserPayload = { id: user.id, email: user.email, roles: user.roles.map(item => item.name) };
+
+      const payload: IUserPayload = { id: user.id, email: user.email };
       const newTokens = TokenService.generateTokens(payload)
       user.refreshToken = newTokens.refreshToken
       await userRepo.save(user)
+
+      const space = new Space();
+      space.name = `${userData.displayName} Пространство`;
+      await spaceRepo.save(space);
+
+      const userSpace = new UserSpaces();
+      userSpace.user = user;
+      userSpace.space = space;
+      userSpace.is_edit = true; // Пользователь по умолчанию имеет права на редактирование
+      userSpace.is_admin = true; // Пользователь по умолчанию является администратором
+      userSpace.is_selected = true; // Пространство становится основным для пользователя
+      await userSpacesRepo.save(userSpace);
+
       console.log("set new cookie", newTokens.refreshToken)
       res.setHeader("Set-Cookie", cookie.serialize("refreshToken", newTokens.refreshToken, {
         httpOnly: true,
@@ -129,7 +112,7 @@ class AuthController {
         if (err || !user) {
           return res.status(401).json({ message: 'Неправильные email или пароль.', login: true });
         }
-        const payload: IUserPayload = { id: user.id, email: user.email, roles: user.roles.map(item => item.name) };
+        const payload: IUserPayload = { id: user.id, email: user.email };
         const newTokens = TokenService.generateTokens(payload)
         user.refreshToken = newTokens.refreshToken
         await userRepo.save(user)
@@ -156,6 +139,7 @@ class AuthController {
         sameSite: 'none',
         secure: true,
       });
+      console.log(req?.user?.id)
       const user = await userRepo.findOneBy({ id: req.user?.id || "" })
       if (user) {
         user.refreshToken = ""
@@ -177,7 +161,6 @@ class AuthController {
 
   async oauthCallback(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("oauth starts", req.user)
       if ((req.user as any)?.tokens) {
         console.log("set cookies")
         console.log("set new cookie", (req.user as any).tokens.refreshToken)
@@ -205,7 +188,7 @@ class AuthController {
       if (!req.user) {
         return res.status(401).json({data: null})
       }
-      const user = await userRepo.findOne({ where: { email: req.user.email }, relations: { address: true, roles: true } })
+      const user = await userRepo.findOne({ where: { email: req.user.email }, relations: { userSpaces: { space: true }  } })
       if (!user) {
         return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
       }
@@ -214,96 +197,28 @@ class AuthController {
       next(error)
     }
   }
-  async getBalance(req: Request, res: Response, next: NextFunction) {
-    try {
-      console.log("get balance start")
-      if (!req.user) {
-        return res.status(401).json({message: "Нет доступа"})
-      }
-      const user = await userRepo.findOne({ where: { email: req.user.email }})
-      if (!user) {
-        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
-      }
-      return res.json({balance: user.cash})
-    } catch (error) {
-      next(error)
-    }
-  }
-  async updateUserCash(req: TypedRequestBody<UpdateUserCashDto>, res: Response, next: NextFunction) {
-    try {
-      const id = req.user?.id
-      const user = await userRepo.findOneBy({ id })
-      if (!user) {
-        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
-      }
-      await userRepo.update({ id }, { cash: () => `cash + ${req.body.cash}` })
-      return res.json({data: true})
-    } catch (error) {
-      next(error)
-    }
-  }
+
   async updateUserContact(req: TypedRequestBody<UpdateUserContantDto>, res: Response, next: NextFunction) {
     try {
       const id = req.user?.id
-      const user = await userRepo.findOneBy({ id })
+      const user = await userRepo.findOne({ where: { id }})
       if (!user) {
         res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
       }
+
+      const {activeSpace, canEdit, isAdmin} = await authService.findSpaceIdByEmail(req.user?.email);
+      if (!activeSpace || !canEdit || !isAdmin) {
+        return res.status(404).json({ data: null, message: "Активное пространство не найдено" });
+      }
+
       await userRepo.update({ id }, req.body)
+
+      activeSpace.name = `${req.body.displayName} Пространство`;
+
+      await spaceRepo.save(activeSpace);
+
       return res.json({data: true})
     } catch (error) {
-      next(error)
-    }
-  }
-  async updateUserAddress(req: TypedRequestBody<UpdateUserAddressDto>, res: Response, next: NextFunction) {
-    try {
-      const id = req.user?.id
-      const user = await userRepo.findOne({ where: { id }, relations: {address: true}})
-      if (!user) {
-        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
-      }
-      const result = await addressRepo.update({ id: user.address.id }, {...user?.address, ...req.body})
-      return res.json({data: true})
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  async getAllUsers(req: TypedRequestQuery<FindUsersDto>, res: Response, next: NextFunction) {
-    try {
-      const {query = ""} = req.query
-      const users = await userRepo.find({
-        where: [
-          {firstName: ILike(`%${query}%`)},
-          {lastName: ILike(`%${query}%`)},
-          {phone: ILike(`%${query}%`)},
-        ]
-      })
-      if (!users) {
-        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
-      }
-      return res.json(users.map(user => user.toJSON()))
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  async deleteUser(req: Request, res: Response, next: NextFunction) {
-    try {
-      res.clearCookie("refreshToken", {
-        sameSite: 'none',
-        secure: true,
-      });
-      const id = req.user?.id
-      const user = await userRepo.findOne({ where: { id }})
-      if (!user) {
-        return res.status(404).json({data: null, message: "Информация о пользователе не найдена"})
-      }
-      console.log({id})
-      await userRepo.delete({id})
-      res.json({ data: true })
-    } catch (error) {
-      console.log(error)
       next(error)
     }
   }

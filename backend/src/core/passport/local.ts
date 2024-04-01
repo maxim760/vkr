@@ -15,7 +15,7 @@ const applyLocalStrategy = (passport: PassportStatic) => {
     new LocalStrategy({ usernameField: "email", passwordField: "password" },
       async (email, password, done) => {
         console.log("local strategy")
-        const user = await userRepo.findOne({ where: { email }, relations: {roles: true} })
+        const user = await userRepo.findOne({ where: { email } })
         console.log("local strategy after find")
         if (!user) {
           console.log("not user")

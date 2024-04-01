@@ -1,6 +1,6 @@
 import { AxiosError } from "axios"
 
-export const getBaseUrl = () => process.env.REACT_APP_SERVER_URL
+export const getBaseUrl = () => import.meta.env.VITE_SERVER_URL;
 
 export const getErrorMessage = (e: unknown, defaultMessage: string) =>
   (e as AxiosError<{ message: string }>)?.response?.data?.message || defaultMessage || "Неизвестная ошибка"

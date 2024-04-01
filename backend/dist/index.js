@@ -44,14 +44,14 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const passport_2 = require("./src/core/passport");
 const data_source_1 = require("./src/core/connection/data-source");
 const auth_router_1 = require("./src/auth/auth.router");
-const order_router_1 = require("./src/order/order.router");
-const certificate_router_1 = require("./src/certificate/certificate.router");
-const goods_router_1 = require("./src/goods/goods.router");
-const product_router_1 = require("./src/product/product.router");
+const folder_router_1 = require("./src/folder/folder.router");
+const space_router_1 = require("./src/space/space.router");
+const recipe_router_1 = require("./src/recipe/recipe.router");
 process.env.TZ = "UTC";
 data_source_1.AppDataSource
     .initialize()
     .then((connection) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("then");
     const queryRunner = connection.createQueryRunner();
     // await queryRunner.query(`
     //   CREATE TRIGGER IF NOT EXISTS order_goods_AFTER_INSERT
@@ -112,10 +112,9 @@ const ErrorHandler = (err, req, res, next) => {
 const rootRouter = (0, express_1.Router)();
 app.get("/", (req, res) => res.json({ message: "success" }));
 rootRouter.use("/auth", auth_router_1.authRouter);
-rootRouter.use("/order", order_router_1.orderRouter);
-rootRouter.use("/certificate", certificate_router_1.certificateRouter);
-rootRouter.use("/goods", goods_router_1.goodsRouter);
-rootRouter.use("/product", product_router_1.productRouter);
+rootRouter.use("/folder", folder_router_1.folderRouter);
+rootRouter.use("/space", space_router_1.spaceRouter);
+rootRouter.use("/recipe", recipe_router_1.recipeRouter);
 app.use("/api", rootRouter);
 app.use(ErrorHandler);
 app.listen(8000, () => {

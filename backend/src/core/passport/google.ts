@@ -17,8 +17,7 @@ const applyGoogleStrategy = (passport: PassportStatic) => {
   },
   async function (accessToken, refreshToken, profile, done) {
     const user: Partial<User> = {
-      firstName: profile.name?.givenName || "",
-      lastName: profile.name?.familyName || "",
+      displayName: profile.displayName,
       email: profile._json.email || ""
     }
     const loginData = await authService.loginAfterOauth(user)

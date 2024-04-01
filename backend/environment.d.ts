@@ -17,7 +17,7 @@ declare namespace NodeJS {
     ROOT_ROUTE: string
     SESSION_SECRET: string
     PORT: string
-    DB_TYPE: "mysql"
+    DB_TYPE: "postgres"
     DB_CONNECT_URL: string
   }
 }

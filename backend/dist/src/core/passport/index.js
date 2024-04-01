@@ -27,7 +27,7 @@ const applyStrategies = (passport) => {
     passport.deserializeUser(function (id, done) {
         console.log("deserializez", id);
         try {
-            const user = user_repo_1.userRepo.findOneOrFail({ where: { id }, relations: { roles: true } });
+            const user = user_repo_1.userRepo.findOneOrFail({ where: { id } });
             done(null, user);
         }
         catch (e) {

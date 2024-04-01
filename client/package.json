@@ -47,6 +47,6 @@
 		"tailwindcss": "^3.4.1"
 	},
 	"resolutions": {
-    "string-width": "4.2.3"
+		"jackspeak": "2.1.1"
 	}
 }

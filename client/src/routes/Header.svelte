@@ -25,6 +25,13 @@
 	const logout = () => {
 		$mutation.mutate();
 	}
+
+	const links = [
+		{ title: 'Все рецепты', href: '/', icon: ReceiptSolid },
+		{ title: 'Избранные', href: '/like', icon: HeartSolid },
+		{ title: 'Поиск', href: '/search', icon: SearchSolid },
+		{ title: 'Настройки', href: '/settings', icon: UserSettingsSolid },
+	]
 </script>
 
 <header>
@@ -33,44 +40,24 @@
 			<img src={logo} alt="SvelteKit" />
 		</div>
 	</div>
-
 	<nav class="desktop">
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
+		<svg viewBox="0 0 2 3" aria-hidden="true"><path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" /></svg>
 		<ul>
-			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Все рецепты</a>
-			</li>
-			<li aria-current={$page.url.pathname === '/like' ? 'page' : undefined}>
-				<a href="/like">Избранные</a>
-			</li>
-			<li aria-current={$page.url.pathname === '/search' ? 'page' : undefined}>
-				<a href="/search">Поиск</a>
-			</li>
-			<li aria-current={$page.url.pathname === '/settings' ? 'page' : undefined}>
-				<a href="/settings">Настройки</a>
-			</li>
+			{#each links as link}
+				<li aria-current={$page.url.pathname === link.href ? 'page' : undefined}>
+					<a href={link.href}>{link.title}</a>
+				</li>
+			{/each}
 		</ul>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
+		<svg viewBox="0 0 2 3" aria-hidden="true"><path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" /></svg>
 	</nav>
-
 	<nav class="mobile">
 		<ul>
-			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/"><ReceiptSolid color={$page.url.pathname === '/' ? 'red' : undefined}  /></a>
-			</li>
-			<li aria-current={$page.url.pathname === '/like' ? 'page' : undefined}>
-				<a href="/like"><HeartSolid color={$page.url.pathname === '/like' ? 'red' : undefined} /></a>
-			</li>
-			<li aria-current={$page.url.pathname === '/search' ? 'page' : undefined}>
-				<a href="/search"><SearchSolid color={$page.url.pathname === '/search' ? 'red' : undefined}  /></a>
-			</li>
-			<li aria-current={$page.url.pathname === '/settings' ? 'page' : undefined}>
-				<a href="/settings"><UserSettingsSolid color={$page.url.pathname === '/settings' ? 'red' : undefined}  /></a>
-			</li>
+			{#each links as link}
+				<li aria-current={$page.url.pathname === link.href ? 'page' : undefined}>
+					<a href={link.href}><svelte:component this={link.icon} color={$page.url.pathname === link.href ? 'red' : undefined} /></a>
+				</li>
+			{/each}
 		</ul>
 	</nav>
 
@@ -182,28 +169,22 @@
 		.desktop {
 			display: none;
 		}
-
 		.mobile {
 			display: block;
 			width: 100%;
 		}
-
 		.mobile ul {
 			display: flex;
 			flex-direction: row;
 			align-items: center;
 			width: 100%;
 		}
-
 		.mobile ul > * {
 			flex: 1;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 		}
-
-		
-
 		.corner {
 			display: none;
 		}

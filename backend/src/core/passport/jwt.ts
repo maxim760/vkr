@@ -33,7 +33,6 @@ const jwtAccessOptions: JWTStrategyOptions = {
 const applyJwtStrategy = (passport: PassportStatic) => {
   passport.use("jwt-refresh", new JWTStrategy(jwtRefreshOptions, async (payload: IUserPayload, done) => {
     const { id, email } = payload
-    console.log("jwt refresh", id, email)
     const user = await userRepo.findOne({ where: { id } })
     const refreshToken = user?.refreshToken
     if (refreshToken) {

@@ -5,13 +5,14 @@ import { tokenService } from "src/utils/config/tokens"
 import { get } from "svelte/store"
 
 export const load = async () => {
+  let res;
   try {
-    const res = await authApi.refresh();
+    res = await authApi.refresh();
     userStore.setUser(res.user);
     tokenService.setAccessToken(res.accessToken);
   } catch {}
 
-  if (!get(userStore.user)) redirect(302, "/login");
+  if (!res?.user || !res?.accessToken) return redirect(302, "/login");
 
   return {};
 }

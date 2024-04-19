@@ -7,10 +7,10 @@ exports.TokenService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 exports.TokenService = {
     createAccessToken(payload) {
-        return jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, { expiresIn: "30d" });
+        return jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
     },
     createRefreshToken(payload) {
-        return jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, { expiresIn: "90d" });
+        return jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET, { expiresIn: "30d" });
     },
     generateTokens(payload) {
         return {

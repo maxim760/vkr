@@ -67,7 +67,6 @@ app.use(express.json())
 app.use(cookieParser())
 
 const ErrorHandler = (err: unknown, req: Request, res: Response, next: NextFunction) => {
-  console.log("Middleware Error Hadnling");
   const {message = "Неизвестная ошибка", statusCode = 500} = err as Record<string, any> || {}
   res.status(statusCode).json({
     success: false,

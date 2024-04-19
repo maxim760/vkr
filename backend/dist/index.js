@@ -101,7 +101,6 @@ app.use(passport_1.default.session());
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 const ErrorHandler = (err, req, res, next) => {
-    console.log("Middleware Error Hadnling");
     const { message = "Неизвестная ошибка", statusCode = 500 } = err || {};
     res.status(statusCode).json({
         success: false,

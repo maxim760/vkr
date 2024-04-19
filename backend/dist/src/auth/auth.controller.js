@@ -172,6 +172,8 @@ class AuthController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const data = req.user;
+                if (!data)
+                    throw new Error('refresh error');
                 res.json({ user: (_b = (_a = data === null || data === void 0 ? void 0 : data.user) === null || _a === void 0 ? void 0 : _a.toJSON) === null || _b === void 0 ? void 0 : _b.call(_a), accessToken: data.tokens.accessToken });
             }
             catch (e) {

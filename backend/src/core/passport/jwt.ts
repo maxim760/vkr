@@ -33,21 +33,28 @@ const jwtAccessOptions: JWTStrategyOptions = {
 const applyJwtStrategy = (passport: PassportStatic) => {
   passport.use("jwt-refresh", new JWTStrategy(jwtRefreshOptions, async (payload: IUserPayload, done) => {
     const { id, email } = payload
+    console.log("refresh 0")
     const user = await userRepo.findOne({ where: { id } })
     const refreshToken = user?.refreshToken
+    console.log("refresh 1")
     if (refreshToken) {
       // Проверяем валидность refresh-токена
       try {
+        console.log("refresh 2")
         const payload: IUserPayload = { id, email: user.email };
         const newTokens = TokenService.generateTokens(payload)
         user.refreshToken = newTokens.refreshToken
         await userRepo.save(user)
+        console.log("refresh 3")
         done(null, {tokens: newTokens, user});
+        console.log("refresh 4")
       } catch (err) {
-        done(err);
+        console.log("refresh 5")
+        done(null, false);
       }
     } else {
-      done(new Error('Refresh token not found'));
+      console.log("refresh 6")
+      done(null, false);
     }
   }))
   passport.use("jwt", new JWTStrategy(jwtAccessOptions, (payload, done) => {

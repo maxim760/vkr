@@ -1,4 +1,4 @@
-import type   { IUser } from "src/api/types/models/User"
+import type { IUser } from "src/api/types/models/User"
 import { writable } from "svelte/store"
 
 const makeUserStore = () => {

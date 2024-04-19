@@ -152,7 +152,8 @@ class AuthController {
   }
   async refresh(req: Request, res: Response, next: NextFunction) {
     try {
-      const data = req.user as { tokens: ITokens, user: User }
+      const data = req.user as { tokens: ITokens, user: User } | false
+      if (!data) throw new Error('refresh error')
       res.json({user: data?.user?.toJSON?.(), accessToken: data.tokens.accessToken})
     } catch (e) {
       next(e)

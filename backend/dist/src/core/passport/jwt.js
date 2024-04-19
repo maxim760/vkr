@@ -38,24 +38,30 @@ const jwtAccessOptions = {
 const applyJwtStrategy = (passport) => {
     passport.use("jwt-refresh", new passport_jwt_1.Strategy(jwtRefreshOptions, (payload, done) => __awaiter(void 0, void 0, void 0, function* () {
         const { id, email } = payload;
-        console.log("jwt refresh", id, email);
+        console.log("refresh 0");
         const user = yield user_repo_1.userRepo.findOne({ where: { id } });
         const refreshToken = user === null || user === void 0 ? void 0 : user.refreshToken;
+        console.log("refresh 1");
         if (refreshToken) {
             // Проверяем валидность refresh-токена
             try {
+                console.log("refresh 2");
                 const payload = { id, email: user.email };
                 const newTokens = tokens_1.TokenService.generateTokens(payload);
                 user.refreshToken = newTokens.refreshToken;
                 yield user_repo_1.userRepo.save(user);
+                console.log("refresh 3");
                 done(null, { tokens: newTokens, user });
+                console.log("refresh 4");
             }
             catch (err) {
-                done(err);
+                console.log("refresh 5");
+                done(null, false);
             }
         }
         else {
-            done(new Error('Refresh token not found'));
+            console.log("refresh 6");
+            done(null, false);
         }
     })));
     passport.use("jwt", new passport_jwt_1.Strategy(jwtAccessOptions, (payload, done) => {

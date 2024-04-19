@@ -9,6 +9,13 @@ import { parseRussianFood } from "./helpers/parseRussianFoods";
 import { Recipe } from "./recipe.entity";
 import { recipeRepo } from "./recipe.repo";
 
+
+  type FolderRecipe = {
+    id: string,
+    recipes: Recipe[],
+    name: string,
+  }
+
 class RecipeController {
   async createRecipe(req: Request, res: Response, next: NextFunction) {
     try {
@@ -99,18 +106,18 @@ class RecipeController {
     }
   }
 
-  private async getFoldersWithRecipes(spaceId: string): Promise<any[]> {
-    try {
-      const folders = await folderRepo.find({ where: { space: { id: spaceId } } });
-      const result = await Promise.all(folders.map(async folder => {
-        const recipes = await recipeRepo.find({ where: { folder: { id: folder.id } } });
-        return { id: folder.id, name: folder.name, recipes };
-      }));
-      return result;
-    } catch {
-      return [];
+    private async getFoldersWithRecipes(spaceId: string): Promise<FolderRecipe[]> {
+      try {
+        const folders = await folderRepo.find({ where: { space: { id: spaceId } } });
+        const result = await Promise.all(folders.map(async folder => {
+          const recipes = await recipeRepo.find({ where: { folder: { id: folder.id } } });
+          return { id: folder.id, name: folder.name, recipes };
+        }));
+        return result;
+      } catch {
+        return [];
+      }
     }
-  }
 
   getAllRecipes = async (req: Request, res: Response, next: NextFunction) => {
     try {
